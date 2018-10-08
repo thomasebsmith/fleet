@@ -7,6 +7,7 @@ public:
     Comment,
     Grouper,
     Identifier,
+    LineBreak,
     Number,
     Operator,
     String

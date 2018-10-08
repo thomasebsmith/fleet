@@ -21,7 +21,15 @@ void TokenStream::queueNext() {
     return;
   }
   char firstChar = code.at(index);
-  if (std::isspace(firstChar)) {
+  if (firstChar == '\n') {
+    if (lastToken && lastToken->getType() == Token::Type::Operator) {
+      takeLineBreak();
+    }
+    else {
+      nextToken = {takeLineBreak(), Token::Type::LineBreak};
+    }
+  }
+  else if (std::isspace(firstChar)) {
     takeWhitespace();
   }
   else if (std::isdigit(firstChar)) {
@@ -62,6 +70,7 @@ Token TokenStream::next() {
   // Get the next token
   Token token = peek(); 
   // Reset nextToken so that a different token is obtained next time
+  lastToken = nextToken;
   nextToken = {}; 
   return token;
 }
@@ -75,7 +84,12 @@ bool TokenStream::hasNext() {
 
 std::string TokenStream::takeWhitespace() {
   int originalIndex = index;
-  while (index < code.length() && std::isblank(code.at(index))) {
+  char c;
+  while (index < code.length()) {
+    c = code.at(index);
+    if (c == '\n' || !std::isblank(c)) {
+      break;
+    }
     index++;
   }
   return code.substr(originalIndex, index - originalIndex);
@@ -110,9 +124,26 @@ std::string TokenStream::takeIdentifier() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+std::string TokenStream::takeLineBreak() {
+  if (index >= code.length()) {
+    return "";
+  }
+  index++;
+  return code.substr(index - 1, 1);
+}
+
 std::string TokenStream::takeNumber() {
   int originalIndex = index;
-  while (index < code.length() && std::isdigit(code.at(index))) {
+  char c;
+  bool dotFound = false;
+  while (index < code.length()) {
+    c = code.at(index);
+    if (!dotFound && c == '.') {
+      dotFound = true;
+    }
+    else if (!std::isdigit(code.at(index))) {
+      break;
+    }
     index++;
   }
   return code.substr(originalIndex, index - originalIndex);
