@@ -17,11 +17,16 @@ private:
   Type type;
 
   public:
+  Token();
   Token(std::string tokenValue, Type tokenType);
   Type getType() const;
   std::string getValue() const;
   void setType(Type newType);
   void setValue(std::string newValue);
+  bool isOpeningGrouper() const;
+  Token matchingGrouper() const;
+  bool operator==(const Token &rhs);
+  bool operator!=(const Token &rhs);
 };
 
 #endif
