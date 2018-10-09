@@ -2,6 +2,8 @@
 #define TESTER_HPP
 
 #include <string>
+#include <utility>
+#include <vector>
 
 class Tester {
 private:
@@ -15,6 +17,8 @@ public:
   int getFailed();
   void test(std::string name, void (*testFunction)());
   int run();
+
+  static void confirm(bool condition);
 };
 
 #endif

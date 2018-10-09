@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -40,4 +41,9 @@ int Tester::run() {
     std::cout << "All tests PASSED!!\n";
   }
   return testsFailed;
+}
+void Tester::confirm(bool condition) {
+  if (!condition) {
+    throw std::runtime_error("Assertion failed");
+  }
 }
