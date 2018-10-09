@@ -15,9 +15,10 @@ int Tester::getFailed() {
 void Tester::test(std::string name, void (*testFunction)()) {
   tests.emplace_back(name, testFunction);
 }
-void Tester::run() {
+int Tester::run() {
   testsPassed = 0;
   testsFailed = 0;
+  std::cout << "Running tests for " + testerName + "...\n===\n";
   for (size_t i = 0; i < tests.size(); i++) {
     try {
       tests.at(i).second();
@@ -38,4 +39,5 @@ void Tester::run() {
   else {
     std::cout << "All tests PASSED!!\n";
   }
+  return testsFailed;
 }

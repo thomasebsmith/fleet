@@ -14,7 +14,7 @@ public:
   int getPassed();
   int getFailed();
   void test(std::string name, void (*testFunction)());
-  void run();
+  int run();
 };
 
 #endif
