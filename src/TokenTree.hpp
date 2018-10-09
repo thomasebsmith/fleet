@@ -1,6 +1,13 @@
 #ifndef TOKENTREE_HPP
 #define TOKENTREE_HPP
 
+#include <string>
+#include <utility>
+#include <vector>
+#include "ParseError.hpp"
+#include "Token.hpp"
+#include "TokenStream.hpp"
+
 class TokenTree {
 private:
   static std::unordered_map<std::string, int> precedences;

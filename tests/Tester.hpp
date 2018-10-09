@@ -1,6 +1,8 @@
 #ifndef TESTER_HPP
 #define TESTER_HPP
 
+#include <string>
+
 class Tester {
 private:
   int testsPassed;

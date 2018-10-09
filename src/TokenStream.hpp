@@ -1,6 +1,10 @@
 #ifndef TOKENSTREAM_HPP
 #define TOKENSTREAM_HPP
 
+#include <string>
+#include "ParseError.hpp"
+#include "Token.hpp"
+
 class TokenStream {
 private:
   const std::string code;
