@@ -2,6 +2,7 @@
 #define TOKENTREE_HPP
 
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 #include "ParseError.hpp"

@@ -18,7 +18,7 @@ private:
   std::string value;
   Type type;
 
-  public:
+public:
   Token();
   Token(std::string tokenValue, Type tokenType);
   Type getType() const;

@@ -1,6 +1,7 @@
 #ifndef TOKENSTREAM_HPP
 #define TOKENSTREAM_HPP
 
+#include <optional>
 #include <string>
 #include "ParseError.hpp"
 #include "Token.hpp"
