@@ -10,6 +10,11 @@ TokenStream::TokenStream(std::string codeString): code(codeString) {
   // declarations.
 }
 
+bool TokenStream::isblank(char c) {
+  return c == ' ' || c == '\n' || c == '\t' || c == '\r' || c ==  '\f' ||
+    c == '\v';
+}
+
 // This method queues the next token from the code string into the private
 // variable nextToken. This method *must* put a non-null value into nextToken
 // unless the code string has been exhausted.
@@ -24,6 +29,7 @@ void TokenStream::queueNext() {
   if (firstChar == '\n') {
     if (lastToken && lastToken->getType() == Token::Type::Operator) {
       takeLineBreak();
+      queueNext(); // Since otherwise nothing is queued
     }
     else {
       nextToken = {takeLineBreak(), Token::Type::LineBreak};
@@ -31,6 +37,7 @@ void TokenStream::queueNext() {
   }
   else if (std::isspace(firstChar)) {
     takeWhitespace();
+    queueNext(); // Since nothing will be queued if whitespace is taken
   }
   else if (std::isdigit(firstChar)) {
     nextToken = {takeNumber(), Token::Type::Number};
@@ -87,7 +94,7 @@ std::string TokenStream::takeWhitespace() {
   char c;
   while (index < code.length()) {
     c = code.at(index);
-    if (c == '\n' || !std::isblank(c)) {
+    if (c == '\n' || !TokenStream::isblank(c)) {
       break;
     }
     index++;
@@ -104,11 +111,11 @@ std::string TokenStream::takeComment() {
 }
 
 std::string TokenStream::takeGrouper() {
-  index++;
-  if (index < code.length()) {
-    return code.substr(index - 1, 1);
+  if (index >= code.length()) {
+    return "";
   }
-  return "";
+  index++;
+  return code.substr(index - 1, 1);
 }
 
 std::string TokenStream::takeIdentifier() {
@@ -154,7 +161,7 @@ std::string TokenStream::takeOperator() {
   char c;
   while (index < code.length()) {
     c = code.at(index);
-    if (std::isblank(c) || std::isalnum(c) || c == '#' || c == '_' ||
+    if (TokenStream::isblank(c) || std::isalnum(c) || c == '#' || c == '_' ||
         c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' ||
         c == '"' || c == '\'') {
       break;

@@ -13,6 +13,8 @@ private:
   std::optional<Token> nextToken {};
   std::optional<Token> lastToken {};
   void queueNext();
+  
+  static bool isblank(char c);
 
   std::string takeWhitespace();
   std::string takeComment();
