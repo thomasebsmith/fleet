@@ -17,6 +17,22 @@ TokenTree::TokenTree(
 ): functionCall{f, x}, type{Type::FunctionCall} {}
 TokenTree::TokenTree(std::vector<std::shared_ptr<TokenTree> > lines):
   multiLine{lines}, type{Type::MultiLine} {}
+TokenTree::TokenTree(const TokenTree &copyFrom): type {copyFrom.type} {
+  switch (copyFrom.type) {
+    case Type::Endpoint:
+      endpoint = copyFrom.endpoint;
+      break;
+    case Type::FunctionCall:
+      functionCall = copyFrom.functionCall;
+      break;
+    case Type::MultiLine:
+      multiLine = copyFrom.multiLine;
+      break;
+    default:
+      // Should never occur
+      break;
+  }
+}
 TokenTree::~TokenTree() {
   switch (type) {
     case Type::Endpoint:
@@ -34,6 +50,40 @@ TokenTree::~TokenTree() {
       // Do nothing
       break;
   }
+}
+
+TokenTree::Type TokenTree::getType() {
+  return type;
+}
+
+std::optional<Token> TokenTree::getEndpoint() {
+  if (type == Type::Endpoint) {
+    return { endpoint };
+  }
+  return {};
+}
+std::optional<std::pair<TokenTree, TokenTree>> TokenTree::getFunctionCall() {
+  if (type == Type::FunctionCall) {
+    if (functionCall.first && functionCall.second) {
+      return { std::pair<TokenTree, TokenTree> {
+        *functionCall.first, *functionCall.second
+      } };
+    }
+  }
+  return {};
+}
+std::optional<std::vector<TokenTree>> TokenTree::getMultiLine() {
+  if (type == Type::MultiLine) {
+    std::vector<TokenTree> lines;
+    lines.reserve(multiLine.size());
+    for (unsigned int i = 0; i < multiLine.size(); i++) {
+      if (multiLine.at(i)) {
+        lines.push_back(*multiLine.at(i));
+      }
+    }
+    return { lines };
+  }
+  return {};
 }
 
 // *Nothing* should have a precedence less than 0, since that is reserved for
