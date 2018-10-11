@@ -25,6 +25,10 @@ int Tester::run() {
       tests.at(i).second();
       testsPassed++;
     }
+    catch (std::runtime_error e) {
+      testsFailed++;
+      std::cout << "FAILED test " + tests.at(i).first + " (" + e.what() + ")\n";
+    }
     catch (...) {
       testsFailed++;
       std::cout << "FAILED test " + tests.at(i).first + "\n";
@@ -42,8 +46,12 @@ int Tester::run() {
   }
   return testsFailed;
 }
-void Tester::confirm(bool condition) {
+void Tester::confirmCondition(bool condition, int line) {
   if (!condition) {
-    throw std::runtime_error("Assertion failed");
+    std::string error = "Assertion failed";
+    if (line > 0) {
+      error += " on line " + std::to_string(line);
+    }
+    throw std::runtime_error(error);
   }
 }

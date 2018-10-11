@@ -5,6 +5,10 @@
 #include <utility>
 #include <vector>
 
+#ifndef TESTER_HPP_NOMACRO
+#define confirm(condition) confirmCondition(condition, __LINE__)
+#endif
+
 class Tester {
 private:
   int testsPassed;
@@ -18,7 +22,7 @@ public:
   void test(std::string name, void (*testFunction)());
   int run();
 
-  static void confirm(bool condition);
+  static void confirmCondition(bool condition, int line = 0);
 };
 
 #endif
