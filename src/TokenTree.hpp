@@ -10,6 +10,7 @@
 #include "ParseError.hpp"
 #include "Token.hpp"
 #include "TokenStream.hpp"
+#include "TokenTreeVisitor.hpp"
 
 class TokenTree {
 public:
@@ -35,7 +36,7 @@ public:
   TokenTree(const LineList &lines);
   TokenTree(const TokenTree &copyFrom);
 
-  // TODO void visit(visitor);
+  void accept(const TokenTreeVisitor &v);
 
   static int getPrecedence(std::string op);
   static bool getAssociativity(std::string op);

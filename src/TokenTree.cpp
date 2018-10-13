@@ -11,6 +11,7 @@
 #include "Token.hpp"
 #include "TokenStream.hpp"
 #include "TokenTree.hpp"
+#include "TokenTreeVisitor.hpp"
 
 TokenTree::TokenTree(const Token &value): data {value} {}
 
@@ -61,6 +62,31 @@ bool TokenTree::getAssociativity(std::string op) {
     return TokenTree::associativities.at(op);
   }
   return TokenTree::defaultAssociativity;
+}
+
+void TokenTree::accept(const TokenTreeVisitor &v) {
+  if (std::holds_alternative<Token>(data)) {
+    v.visit(*std::get_if<Token>(&data));
+  }
+  else if (std::holds_alternative<TokenTree::FunctionPair>(data)) {
+    auto pair = *std::get_if<TokenTree::FunctionPair>(&data);
+    if (pair.first && pair.second) {
+      v.visit(*pair.first, *pair.second);
+    }
+  }
+  else if (std::holds_alternative<TokenTree::LineList>(data)) {
+    auto list = *std::get_if<TokenTree::LineList>(&data);
+    std::vector<TokenTree> lines;
+    unsigned int numLines = list.size();
+    lines.reserve(numLines);
+    for (unsigned int i = 0; i < numLines; i++) { 
+      if (!list.at(i)) {
+        return;
+      }
+      lines.push_back(*list.at(i));
+    }
+    v.visit(lines);
+  }
 }
 
 TokenTree TokenTree::build(TokenStream stream) {
