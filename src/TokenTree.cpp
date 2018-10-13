@@ -21,6 +21,8 @@ TokenTree::TokenTree(
 
 TokenTree::TokenTree(const TokenTree::LineList &lines): data {lines} {}
 
+TokenTree::TokenTree(const TokenTree &copyFrom): data { copyFrom.data } {}
+
 // *Nothing* should have a precedence less than 0, since that is reserved for
 // function calls internally.
 int TokenTree::defaultPrecedence = 50;
@@ -64,28 +66,56 @@ bool TokenTree::getAssociativity(std::string op) {
   return TokenTree::defaultAssociativity;
 }
 
-void TokenTree::accept(const TokenTreeVisitor &v) {
+std::optional<Token> TokenTree::getToken() {
   if (std::holds_alternative<Token>(data)) {
-    v.visit(*std::get_if<Token>(&data));
+    return { *std::get_if<Token>(&data) };
   }
-  else if (std::holds_alternative<TokenTree::FunctionPair>(data)) {
-    auto pair = *std::get_if<TokenTree::FunctionPair>(&data);
+  return {};
+}
+  
+std::optional<std::pair<TokenTree, TokenTree>> TokenTree::getFunctionPair() {
+  if (std::holds_alternative<TokenTree::FunctionPair>(data)) {
+    const auto &pair = *std::get_if<TokenTree::FunctionPair>(&data);
     if (pair.first && pair.second) {
-      v.visit(*pair.first, *pair.second);
+      std::pair<TokenTree, TokenTree> newPair { *pair.first, *pair.second };
+      return { newPair };
     }
   }
-  else if (std::holds_alternative<TokenTree::LineList>(data)) {
-    auto list = *std::get_if<TokenTree::LineList>(&data);
+  return {};
+}
+
+std::optional<std::vector<TokenTree>> TokenTree::getLineList() {
+  if (std::holds_alternative<TokenTree::LineList>(data)) {
+    const auto &list = *std::get_if<TokenTree::LineList>(&data);
     std::vector<TokenTree> lines;
     unsigned int numLines = list.size();
     lines.reserve(numLines);
     for (unsigned int i = 0; i < numLines; i++) { 
       if (!list.at(i)) {
-        return;
+        return {};
       }
       lines.push_back(*list.at(i));
     }
-    v.visit(lines);
+    return { lines };
+  }
+  return {};
+}
+
+void TokenTree::accept(const TokenTreeVisitor &v) {
+  const auto &token = getToken();
+  if (token) {
+    v.visit(*token);
+    return;
+  }
+  const auto &functionPair = getFunctionPair();
+  if (functionPair) {
+    v.visit(functionPair->first, functionPair->second);
+    return;
+  }
+  const auto &lineList = getLineList();
+  if (lineList) {
+    v.visit(*lineList);
+    return;
   }
 }
 

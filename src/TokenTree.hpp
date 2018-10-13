@@ -7,7 +7,6 @@
 #include <utility>
 #include <variant>
 #include <vector>
-#include "ParseError.hpp"
 #include "Token.hpp"
 #include "TokenStream.hpp"
 #include "TokenTreeVisitor.hpp"
@@ -37,6 +36,9 @@ public:
   TokenTree(const TokenTree &copyFrom);
 
   void accept(const TokenTreeVisitor &v);
+  std::optional<Token> getToken();
+  std::optional<std::pair<TokenTree, TokenTree>> getFunctionPair();
+  std::optional<std::vector<TokenTree>> getLineList();
 
   static int getPrecedence(std::string op);
   static bool getAssociativity(std::string op);
