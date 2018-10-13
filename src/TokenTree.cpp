@@ -5,86 +5,20 @@
 #include <tuple>
 #include <unordered_map>
 #include <utility>
+#include <variant>
 #include <vector>
 #include "ParseError.hpp"
 #include "Token.hpp"
 #include "TokenStream.hpp"
 #include "TokenTree.hpp"
 
-TokenTree::TokenTree(Token value): endpoint{value}, type{Type::Endpoint} {}
+TokenTree::TokenTree(const Token &value): data {value} {}
+
 TokenTree::TokenTree(
-  std::shared_ptr<TokenTree> f, std::shared_ptr<TokenTree> x
-): functionCall{f, x}, type{Type::FunctionCall} {}
-TokenTree::TokenTree(std::vector<std::shared_ptr<TokenTree> > lines):
-  multiLine{lines}, type{Type::MultiLine} {}
-TokenTree::TokenTree(const TokenTree &copyFrom): type {copyFrom.type} {
-  switch (copyFrom.type) {
-    case Type::Endpoint:
-      endpoint = copyFrom.endpoint;
-      break;
-    case Type::FunctionCall:
-      functionCall = copyFrom.functionCall;
-      break;
-    case Type::MultiLine:
-      multiLine = copyFrom.multiLine;
-      break;
-    default:
-      // Should never occur
-      break;
-  }
-}
-TokenTree::~TokenTree() {
-  switch (type) {
-    case Type::Endpoint:
-      endpoint.Token::~Token();
-      break;
-    case Type::FunctionCall:
-      functionCall.~pair<
-        std::shared_ptr<TokenTree>, std::shared_ptr<TokenTree>
-      >();
-      break;
-    case Type::MultiLine:
-      multiLine.~vector<std::shared_ptr<TokenTree>>();
-      break;
-    default:
-      // Do nothing
-      break;
-  }
-}
+  const TokenTree::TreePointer &f, const TokenTree::TreePointer &x
+): data { TokenTree::FunctionPair {f, x} } {}
 
-TokenTree::Type TokenTree::getType() {
-  return type;
-}
-
-std::optional<Token> TokenTree::getEndpoint() {
-  if (type == Type::Endpoint) {
-    return { endpoint };
-  }
-  return {};
-}
-std::optional<std::pair<TokenTree, TokenTree>> TokenTree::getFunctionCall() {
-  if (type == Type::FunctionCall) {
-    if (functionCall.first && functionCall.second) {
-      return { std::pair<TokenTree, TokenTree> {
-        *functionCall.first, *functionCall.second
-      } };
-    }
-  }
-  return {};
-}
-std::optional<std::vector<TokenTree>> TokenTree::getMultiLine() {
-  if (type == Type::MultiLine) {
-    std::vector<TokenTree> lines;
-    lines.reserve(multiLine.size());
-    for (unsigned int i = 0; i < multiLine.size(); i++) {
-      if (multiLine.at(i)) {
-        lines.push_back(*multiLine.at(i));
-      }
-    }
-    return { lines };
-  }
-  return {};
-}
+TokenTree::TokenTree(const TokenTree::LineList &lines): data {lines} {}
 
 // *Nothing* should have a precedence less than 0, since that is reserved for
 // function calls internally.
@@ -134,8 +68,8 @@ TokenTree TokenTree::build(TokenStream stream) {
   std::stack<bool> lastWasNonOperatorStack;
   lastWasNonOperatorStack.push(false);
 
-  std::vector<std::shared_ptr<TokenTree>> lines {};
-  std::vector<std::shared_ptr<TokenTree>> outputQueue {};
+  TokenTree::LineList lines {};
+  TokenTree::LineList outputQueue {};
 
   Token next;
 
@@ -149,8 +83,8 @@ TokenTree TokenTree::build(TokenStream stream) {
           if (outputQueue.size() == 0) {
             throw ParseError("Internal parsing error");
           }
-          auto firstArg = outputQueue.back();
-          std::shared_ptr<TokenTree> lastArg { new TokenTree { next } };
+          const auto &firstArg = outputQueue.back();
+          TokenTree::TreePointer lastArg { new TokenTree { next } };
           outputQueue.pop_back();
           outputQueue.emplace_back(new TokenTree {
             firstArg, lastArg
@@ -184,8 +118,8 @@ TokenTree TokenTree::build(TokenStream stream) {
                 outputQueue.emplace_back(new TokenTree { t });
               }
               else if (outputQueue.size() == 1) {
-                auto lastArg = outputQueue.back();
-                std::shared_ptr<TokenTree> firstArg { new TokenTree { t }};
+                const auto& lastArg = outputQueue.back();
+                TokenTree::TreePointer firstArg { new TokenTree { t }};
                 outputQueue.pop_back();
                 outputQueue.emplace_back(new TokenTree {
                   firstArg,
@@ -193,12 +127,12 @@ TokenTree TokenTree::build(TokenStream stream) {
                 });
               }
               else {
-                auto lastArg = outputQueue.back();
+                const auto &lastArg = outputQueue.back();
                 outputQueue.pop_back();
-                auto secondToLastArg = outputQueue.back();
+                const auto &secondToLastArg = outputQueue.back();
                 outputQueue.pop_back();
-                std::shared_ptr<TokenTree> op { new TokenTree { t } };
-                std::shared_ptr<TokenTree> firstFunc {
+                TokenTree::TreePointer op { new TokenTree { t } };
+                TokenTree::TreePointer firstFunc {
                   new TokenTree { op, secondToLastArg }
                 };
                 outputQueue.emplace_back( new TokenTree {
@@ -216,9 +150,9 @@ TokenTree TokenTree::build(TokenStream stream) {
             if (outputQueue.size() == 0) {
               throw ParseError("Internal parsing error");
             }
-            auto next = outputQueue.back();
+            const auto &next = outputQueue.back();
             outputQueue.pop_back();
-            auto secondToLast = outputQueue.back();
+            const auto &secondToLast = outputQueue.back();
             outputQueue.pop_back();
             outputQueue.emplace_back(new TokenTree {
               secondToLast, next
@@ -246,8 +180,8 @@ TokenTree TokenTree::build(TokenStream stream) {
               outputQueue.emplace_back(new TokenTree { t });
             }
             else if (outputQueue.size() == 1) {
-              auto lastArg = outputQueue.back();
-              std::shared_ptr<TokenTree> firstArg { new TokenTree { t }};
+              const auto &lastArg = outputQueue.back();
+              TokenTree::TreePointer firstArg { new TokenTree { t }};
               outputQueue.pop_back();
               outputQueue.emplace_back(new TokenTree {
                 firstArg,
@@ -255,12 +189,12 @@ TokenTree TokenTree::build(TokenStream stream) {
               });
             }
             else {
-              auto lastArg = outputQueue.back();
+              const auto &lastArg = outputQueue.back();
               outputQueue.pop_back();
-              auto secondToLastArg = outputQueue.back();
+              const auto &secondToLastArg = outputQueue.back();
               outputQueue.pop_back();
-              std::shared_ptr<TokenTree> op { new TokenTree { t } };
-              std::shared_ptr<TokenTree> firstFunc { new TokenTree {
+              TokenTree::TreePointer op { new TokenTree { t } };
+              TokenTree::TreePointer firstFunc { new TokenTree {
                 op, secondToLastArg
               }};
               outputQueue.emplace_back(new TokenTree {
@@ -271,8 +205,9 @@ TokenTree TokenTree::build(TokenStream stream) {
           if (outputQueue.size() != 1) {
             throw ParseError("Internal parse error: output queue not empty");
           }
-          lines.push_back(outputQueue.back());
+          const auto &last = outputQueue.back();
           outputQueue.pop_back();
+          lines.push_back(last);
         }
         break;
       case Token::Type::Operator: {
@@ -292,8 +227,8 @@ TokenTree TokenTree::build(TokenStream stream) {
             outputQueue.emplace_back(new TokenTree { poppedOperator });
           }
           else if (outputQueue.size() == 1) {
-            auto lastArg = outputQueue.back();
-            std::shared_ptr<TokenTree> firstArg { new TokenTree {
+            const auto &lastArg = outputQueue.back();
+            TokenTree::TreePointer firstArg { new TokenTree {
               poppedOperator
             }};
             outputQueue.pop_back();
@@ -303,14 +238,14 @@ TokenTree TokenTree::build(TokenStream stream) {
             });
           }
           else {
-            auto lastArg = outputQueue.back();
+            const auto &lastArg = outputQueue.back();
             outputQueue.pop_back();
-            auto secondToLastArg = outputQueue.back();
+            const auto &secondToLastArg = outputQueue.back();
             outputQueue.pop_back();
-            std::shared_ptr<TokenTree> poppedTree { new TokenTree {
+            TokenTree::TreePointer poppedTree { new TokenTree {
               poppedOperator
             }};
-            std::shared_ptr<TokenTree> firstFunc { new TokenTree {
+            TokenTree::TreePointer firstFunc { new TokenTree {
               poppedTree, secondToLastArg
             }};
             outputQueue.emplace_back(new TokenTree { firstFunc,  lastArg });
@@ -336,8 +271,8 @@ TokenTree TokenTree::build(TokenStream stream) {
         outputQueue.emplace_back(new TokenTree { t });
       }
       else if (outputQueue.size() == 1) {
-        auto lastArg = outputQueue.back();
-        std::shared_ptr<TokenTree> firstArg { new TokenTree { t }};
+        const auto &lastArg = outputQueue.back();
+        TokenTree::TreePointer firstArg { new TokenTree { t }};
         outputQueue.pop_back();
         outputQueue.emplace_back(new TokenTree {
           firstArg,
@@ -345,12 +280,12 @@ TokenTree TokenTree::build(TokenStream stream) {
         });
       }
       else {
-        auto lastArg = outputQueue.back();
+        const auto &lastArg = outputQueue.back();
         outputQueue.pop_back();
-        auto secondToLastArg = outputQueue.back();
+        const auto &secondToLastArg = outputQueue.back();
         outputQueue.pop_back();
-        std::shared_ptr<TokenTree> op { new TokenTree { t } };
-        std::shared_ptr<TokenTree> firstFunc { new TokenTree {
+        TokenTree::TreePointer op { new TokenTree { t } };
+        TokenTree::TreePointer firstFunc { new TokenTree {
           op, secondToLastArg
         }};
         outputQueue.emplace_back(new TokenTree { firstFunc, lastArg });
