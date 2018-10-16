@@ -181,18 +181,20 @@ std::string TokenStream::takeString() {
   index++;
 
   char c;
+  bool lastWasQuote = false;
   while (index < code.length()) {
     c = code.at(index);
     if (c == '\\') {
       takeEscape();
     }
     else if (c == quoteType) {
+      lastWasQuote = true;
       break;
     }
     index++;
   }
   index++;
-  if (index >= code.length()) {
+  if (!lastWasQuote) {
     throw ParseError("Unclosed string");
   }
   return code.substr(originalIndex, index - originalIndex);
