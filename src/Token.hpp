@@ -27,8 +27,8 @@ public:
   void setValue(std::string newValue);
   bool isOpeningGrouper() const;
   Token matchingGrouper() const;
-  bool operator==(const Token &rhs);
-  bool operator!=(const Token &rhs);
+  bool operator==(const Token &rhs) const;
+  bool operator!=(const Token &rhs) const;
 };
 
 #endif

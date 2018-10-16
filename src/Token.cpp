@@ -51,9 +51,9 @@ Token Token::matchingGrouper() const {
   return Token { matching, type };
 }
 
-bool Token::operator==(const Token &rhs) {
+bool Token::operator==(const Token &rhs) const {
   return getType() == rhs.getType() && getValue() == rhs.getValue();
 }
-bool Token::operator!=(const Token &rhs) {
+bool Token::operator!=(const Token &rhs) const {
   return getType() != rhs.getType() || getValue() != rhs.getValue();
 }

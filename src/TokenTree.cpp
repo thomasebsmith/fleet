@@ -66,14 +66,16 @@ bool TokenTree::getAssociativity(std::string op) {
   return TokenTree::defaultAssociativity;
 }
 
-std::optional<Token> TokenTree::getToken() {
+std::optional<Token> TokenTree::getToken() const {
   if (std::holds_alternative<Token>(data)) {
     return { *std::get_if<Token>(&data) };
   }
   return {};
 }
   
-std::optional<std::pair<TokenTree, TokenTree>> TokenTree::getFunctionPair() {
+std::optional<
+  std::pair<TokenTree, TokenTree>
+> TokenTree::getFunctionPair() const {
   if (std::holds_alternative<TokenTree::FunctionPair>(data)) {
     const auto &pair = *std::get_if<TokenTree::FunctionPair>(&data);
     if (pair.first && pair.second) {
@@ -84,7 +86,7 @@ std::optional<std::pair<TokenTree, TokenTree>> TokenTree::getFunctionPair() {
   return {};
 }
 
-std::optional<std::vector<TokenTree>> TokenTree::getLineList() {
+std::optional<std::vector<TokenTree>> TokenTree::getLineList() const {
   if (std::holds_alternative<TokenTree::LineList>(data)) {
     const auto &list = *std::get_if<TokenTree::LineList>(&data);
     std::vector<TokenTree> lines;
@@ -101,7 +103,7 @@ std::optional<std::vector<TokenTree>> TokenTree::getLineList() {
   return {};
 }
 
-void TokenTree::accept(const TokenTreeVisitor &v) {
+void TokenTree::accept(const TokenTreeVisitor &v) const {
   const auto &token = getToken();
   if (token) {
     v.visit(*token);
@@ -139,7 +141,7 @@ TokenTree TokenTree::build(TokenStream stream) {
           if (outputQueue.size() == 0) {
             throw ParseError("Internal parsing error");
           }
-          const auto &firstArg = outputQueue.back();
+          const auto firstArg = outputQueue.back();
           TokenTree::TreePointer lastArg { new TokenTree { next } };
           outputQueue.pop_back();
           outputQueue.emplace_back(new TokenTree {
@@ -183,9 +185,9 @@ TokenTree TokenTree::build(TokenStream stream) {
                 });
               }
               else {
-                const auto &lastArg = outputQueue.back();
+                const auto lastArg = outputQueue.back();
                 outputQueue.pop_back();
-                const auto &secondToLastArg = outputQueue.back();
+                const auto secondToLastArg = outputQueue.back();
                 outputQueue.pop_back();
                 TokenTree::TreePointer op { new TokenTree { t } };
                 TokenTree::TreePointer firstFunc {
@@ -206,9 +208,9 @@ TokenTree TokenTree::build(TokenStream stream) {
             if (outputQueue.size() == 0) {
               throw ParseError("Internal parsing error");
             }
-            const auto &next = outputQueue.back();
+            const auto next = outputQueue.back();
             outputQueue.pop_back();
-            const auto &secondToLast = outputQueue.back();
+            const auto secondToLast = outputQueue.back();
             outputQueue.pop_back();
             outputQueue.emplace_back(new TokenTree {
               secondToLast, next
@@ -236,7 +238,7 @@ TokenTree TokenTree::build(TokenStream stream) {
               outputQueue.emplace_back(new TokenTree { t });
             }
             else if (outputQueue.size() == 1) {
-              const auto &lastArg = outputQueue.back();
+              const auto lastArg = outputQueue.back();
               TokenTree::TreePointer firstArg { new TokenTree { t }};
               outputQueue.pop_back();
               outputQueue.emplace_back(new TokenTree {
@@ -245,9 +247,9 @@ TokenTree TokenTree::build(TokenStream stream) {
               });
             }
             else {
-              const auto &lastArg = outputQueue.back();
+              const auto lastArg = outputQueue.back();
               outputQueue.pop_back();
-              const auto &secondToLastArg = outputQueue.back();
+              const auto secondToLastArg = outputQueue.back();
               outputQueue.pop_back();
               TokenTree::TreePointer op { new TokenTree { t } };
               TokenTree::TreePointer firstFunc { new TokenTree {
@@ -261,7 +263,7 @@ TokenTree TokenTree::build(TokenStream stream) {
           if (outputQueue.size() != 1) {
             throw ParseError("Internal parse error: output queue not empty");
           }
-          const auto &last = outputQueue.back();
+          const auto last = outputQueue.back();
           outputQueue.pop_back();
           lines.push_back(last);
         }
@@ -283,7 +285,7 @@ TokenTree TokenTree::build(TokenStream stream) {
             outputQueue.emplace_back(new TokenTree { poppedOperator });
           }
           else if (outputQueue.size() == 1) {
-            const auto &lastArg = outputQueue.back();
+            const auto lastArg = outputQueue.back();
             TokenTree::TreePointer firstArg { new TokenTree {
               poppedOperator
             }};
@@ -294,9 +296,9 @@ TokenTree TokenTree::build(TokenStream stream) {
             });
           }
           else {
-            const auto &lastArg = outputQueue.back();
+            const auto lastArg = outputQueue.back();
             outputQueue.pop_back();
-            const auto &secondToLastArg = outputQueue.back();
+            const auto secondToLastArg = outputQueue.back();
             outputQueue.pop_back();
             TokenTree::TreePointer poppedTree { new TokenTree {
               poppedOperator
@@ -327,7 +329,7 @@ TokenTree TokenTree::build(TokenStream stream) {
         outputQueue.emplace_back(new TokenTree { t });
       }
       else if (outputQueue.size() == 1) {
-        const auto &lastArg = outputQueue.back();
+        const auto lastArg = outputQueue.back();
         TokenTree::TreePointer firstArg { new TokenTree { t }};
         outputQueue.pop_back();
         outputQueue.emplace_back(new TokenTree {
@@ -336,9 +338,9 @@ TokenTree TokenTree::build(TokenStream stream) {
         });
       }
       else {
-        const auto &lastArg = outputQueue.back();
+        const auto lastArg = outputQueue.back();
         outputQueue.pop_back();
-        const auto &secondToLastArg = outputQueue.back();
+        const auto secondToLastArg = outputQueue.back();
         outputQueue.pop_back();
         TokenTree::TreePointer op { new TokenTree { t } };
         TokenTree::TreePointer firstFunc { new TokenTree {
