@@ -9,7 +9,7 @@
 class TokenStream {
 private:
   const std::string code;
-  int index {0};
+  size_t index {0};
   std::optional<Token> nextToken {};
   std::optional<Token> lastToken {};
   void queueNext();

@@ -6,7 +6,7 @@
 #include "Tester.hpp"
 
 Tester::Tester(std::string name):
-  testerName{name}, testsPassed{0}, testsFailed{0} {}
+  testsPassed{0}, testsFailed{0}, testerName{name} {}
 int Tester::getPassed() {
   return testsPassed;
 }
