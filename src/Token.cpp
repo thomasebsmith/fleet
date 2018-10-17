@@ -57,3 +57,31 @@ bool Token::operator==(const Token &rhs) const {
 bool Token::operator!=(const Token &rhs) const {
   return getType() != rhs.getType() || getValue() != rhs.getValue();
 }
+Token::operator std::string() const {
+  Token::Type t = getType();
+  std::string typeString;
+  switch (t) {
+    case Token::Type::Comment:
+      typeString = "Comment";
+      break;
+    case Token::Type::Grouper:
+      typeString = "Grouper";
+      break;
+    case Token::Type::Identifier:
+      typeString = "Identifier";
+      break;
+    case Token::Type::LineBreak:
+      typeString = "LineBreak";
+      break;
+    case Token::Type::Number:
+      typeString = "Number";
+      break;
+    case Token::Type::Operator:
+      typeString = "Operator";
+      break;
+    case Token::Type::String:
+      typeString = "String";
+      break;
+  }
+  return std::string("(" + typeString + ": " + getValue());
+}

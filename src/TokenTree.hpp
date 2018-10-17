@@ -40,6 +40,9 @@ public:
   std::optional<std::pair<TokenTree, TokenTree>> getFunctionPair() const;
   std::optional<std::vector<TokenTree>> getLineList() const;
 
+  bool operator==(const TokenTree &rhs) const;
+  operator std::string() const;
+
   static int getPrecedence(std::string op);
   static bool getAssociativity(std::string op);
   static TokenTree build(TokenStream stream);

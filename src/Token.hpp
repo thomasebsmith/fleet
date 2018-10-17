@@ -29,6 +29,7 @@ public:
   Token matchingGrouper() const;
   bool operator==(const Token &rhs) const;
   bool operator!=(const Token &rhs) const;
+  operator std::string() const;
 };
 
 #endif

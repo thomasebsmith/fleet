@@ -121,6 +121,55 @@ void TokenTree::accept(const TokenTreeVisitor &v) const {
   }
 }
 
+bool TokenTree::operator==(const TokenTree &rhs) const {
+  const auto &leftToken = getToken();
+  const auto &rightToken = rhs.getToken();
+  if (leftToken || rightToken) {
+    if (!leftToken || !rightToken) {
+      return false;
+    }
+    return *leftToken == *rightToken;
+  }
+  const auto &leftPair = getFunctionPair();
+  const auto &rightPair = rhs.getFunctionPair();
+  if (leftPair || rightPair) {
+    if (!leftPair || !rightPair) {
+      return false;
+    }
+    return *leftPair == *rightPair;
+  }
+  const auto &leftLines = getLineList();
+  const auto &rightLines = rhs.getLineList();
+  if (leftLines || rightLines) {
+    if (!leftLines || !rightLines) {
+      return false;
+    }
+    return *leftLines == *rightLines;
+  }
+  return true;
+}
+
+TokenTree::operator std::string() const {
+  const auto &token = getToken();
+  if (token) {
+    return std::string("[") + static_cast<std::string>(*token) + "]";
+  }
+  const auto &pair = getFunctionPair();
+  if (pair) {
+    return std::string("[") + static_cast<std::string>(pair->first) +
+      ", " + static_cast<std::string>(pair->second) + "]";
+  }
+  const auto &lines = getLineList();
+  if (lines) {
+    std::string result = "{";
+    for (unsigned int i = 0; i < lines->size(); i++) {
+      result += static_cast<std::string>(lines->at(i));
+    }
+    return result;
+  }
+  return "[]";
+}
+
 TokenTree TokenTree::build(TokenStream stream) {
   std::stack<std::tuple<Token, int, bool>> operatorStack;
   std::stack<bool> lastWasNonOperatorStack;
