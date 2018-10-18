@@ -12,9 +12,9 @@ TESTSCFLAGS = -iquote $(SRCDIR)
 DEBUGCFLAGS = -g
 
 CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
-	TokenTree.cpp)
+	TokenTree.cpp Context.cpp TypeError.cpp Value.cpp)
 OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
-  TokenTree.o)
+	TokenTree.o Context.o TypeError.o Value.o)
 TESTCFILES = $(addprefix $(TESTSDIR)/,TestToken.cpp TestTokenStream.cpp \
 	TestTokenTree.cpp Tester.cpp tests.cpp)
 TESTOFILES = $(addprefix $(BUILDDIR)/,TestToken.o TestTokenStream.o \
@@ -56,6 +56,16 @@ TokenStream.hpp ParseError.hpp Token.hpp)
 $(BUILDDIR)/TokenTree.o: $(addprefix $(SRCDIR)/,TokenTree.cpp TokenTree.hpp \
 ParseError.hpp Token.hpp TokenStream.hpp TokenTreeVisitor.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/TokenTree.cpp -o $(BUILDDIR)/TokenTree.o
+
+$(BUILDDIR)/Context.o: $(addprefix $(SRCDIR)/,Context.cpp Context.hpp \
+TypeError.hpp Value.hpp)
+	$(CC) $(CFLAGS) $(SRCDIR)/Context.cpp -o $(BUILDDIR)/Context.o
+
+$(BUILDDIR)/TypeError.o: $(SRCDIR)/TypeError.cpp $(SRCDIR)/TypeError.hpp
+	$(CC) $(CFLAGS) $(SRCDIR)/TypeError.cpp -o $(BUILDDIR)/TypeError.o
+
+$(BUILDDIR)/Value.o: $(SRCDIR)/Value.cpp $(SRCDIR)/Value.hpp
+	$(CC) $(CFLAGS) $(SRCDIR)/Value.cpp -o $(BUILDDIR)/Value.o
 
 # Tests Directory Object Files
 $(BUILDDIR)/TestToken.o: $(addprefix $(TESTSDIR)/,TestToken.cpp TestToken.hpp \

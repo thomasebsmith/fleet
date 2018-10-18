@@ -4,5 +4,5 @@
 
 ParseError::ParseError(std::string message): runtime_error(message) {}
 const char *ParseError::what() const throw() {
-  return runtime_error::what();
+  return (std::string("ParseError: ") + runtime_error::what()).c_str();
 }
