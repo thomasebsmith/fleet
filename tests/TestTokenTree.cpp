@@ -1,6 +1,7 @@
 #include "Tester.hpp"
 #include "TestTokenTree.hpp"
 #include "Token.hpp"
+#include "TokenStream.hpp"
 #include "TokenTree.hpp"
 
 // Function declarations
@@ -20,10 +21,6 @@ int TestTokenTree::main() {
   tester.test("A basic function", basicFunction);
   tester.test("Some operations", operations);
   return tester.run();
-}
-
-int main() {
-  return TestTokenTree::main();
 }
 
 void createWithToken() {

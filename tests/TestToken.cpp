@@ -26,10 +26,6 @@ int TestToken::main() {
   return tester.run();
 }
 
-int main() {
-  return TestToken::main();
-}
-
 void createToken() {
   Token myToken { "some normal value", Token::Type::Comment };
   Token anotherToken { "", Token::Type::String };

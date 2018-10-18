@@ -19,10 +19,6 @@ int TestTokenStream::main() {
   return tester.run();
 }
 
-int main() {
-  return TestTokenStream::main();
-}
-
 void emptyCode() {
   TokenStream empty("");
   Tester::confirm(!empty.hasNext());
