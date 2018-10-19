@@ -24,7 +24,7 @@ public:
     const std::string &identifier
   );
   std::optional<std::runtime_error> define(
-    const std::string &identifier, const Value &value
+    const std::string &identifier, Value::Pointer value
   );
 };
 

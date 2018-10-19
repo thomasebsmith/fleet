@@ -20,15 +20,14 @@ std::variant<std::runtime_error, Value::Pointer> Context::getValue(
 }
 
 std::optional<std::runtime_error> Context::define(
-  const std::string &identifier, const Value &value
+  const std::string &identifier, Value::Pointer value
 ) {
   auto iterator = values.find(identifier);
   if (iterator != values.end()) {
     return { TypeError { identifier + " is already defined" } };
   }
-  Value::Pointer ptr = value.clone();
   values.insert({
-    { identifier, ptr }
+    { identifier, value }
   });
   return {};
 }
