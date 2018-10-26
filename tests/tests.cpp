@@ -13,4 +13,5 @@ int main() {
   else {
     std::cout << "A total of " << result << " tests were FAILED!\n";
   }
+  return result;
 }
