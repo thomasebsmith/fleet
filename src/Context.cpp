@@ -9,11 +9,12 @@
 
 Context::Context() {}
 Context::Context(Context::Pointer parent): parentContext(parent) {}
-std::variant<std::runtime_error, Value::Pointer> Context::getValue(
-  const std::string &identifier
-) {
+Value::OrError Context::getValue(const std::string &identifier) {
   auto iterator = values.find(identifier);
   if (iterator == values.end()) {
+    if (parentContext) {
+      return parentContext->getValue(identifier);
+    }
     return { TypeError { identifier + " is undefined" } };
   }
   return { iterator->second };
@@ -30,4 +31,8 @@ std::optional<std::runtime_error> Context::define(
     { identifier, value }
   });
   return {};
+}
+
+Context::Pointer Context::getParentContext() {
+  return parentContext;
 }

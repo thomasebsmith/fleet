@@ -103,7 +103,8 @@ std::optional<std::vector<TokenTree>> TokenTree::getLineList() const {
   return {};
 }
 
-void TokenTree::accept(const TokenTreeVisitor &v) const {
+template <typename T>
+T TokenTree::accept(const TokenTreeVisitor<T> &v) const {
   const auto &token = getToken();
   if (token) {
     v.visit(*token);

@@ -20,12 +20,11 @@ private:
 public:
   Context();
   Context(Pointer parent);
-  std::variant<std::runtime_error, Value::Pointer> getValue(
-    const std::string &identifier
-  );
+  Value::OrError getValue(const std::string &identifier);
   std::optional<std::runtime_error> define(
     const std::string &identifier, Value::Pointer value
   );
+  Pointer getParentContext();
 };
 
 #endif

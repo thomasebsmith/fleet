@@ -35,7 +35,9 @@ public:
   TokenTree(const LineList &lines);
   TokenTree(const TokenTree &copyFrom);
 
-  void accept(const TokenTreeVisitor &v) const;
+  template <typename T>
+  T accept(const TokenTreeVisitor<T> &v) const;
+
   std::optional<Token> getToken() const;
   std::optional<std::pair<TokenTree, TokenTree>> getFunctionPair() const;
   std::optional<std::vector<TokenTree>> getLineList() const;

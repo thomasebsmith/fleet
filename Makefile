@@ -12,9 +12,11 @@ TESTSCFLAGS = -iquote $(SRCDIR)
 DEBUGCFLAGS = -g
 
 CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
-	TokenTree.cpp Context.cpp TypeError.cpp Value.cpp)
+	TokenTree.cpp Context.cpp TypeError.cpp Value.cpp NumberValue.cpp \
+	FunctionValue.cpp Evaluator.cpp)
 OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
-	TokenTree.o Context.o TypeError.o Value.o)
+	TokenTree.o Context.o TypeError.o Value.o NumberValue.o FunctionValue.o \
+	Evaluator.o)
 TESTCFILES = $(addprefix $(TESTSDIR)/,TestToken.cpp TestTokenStream.cpp \
 	TestTokenTree.cpp Tester.cpp tests.cpp)
 TESTOFILES = $(addprefix $(BUILDDIR)/,TestToken.o TestTokenStream.o \
@@ -66,6 +68,18 @@ $(BUILDDIR)/TypeError.o: $(SRCDIR)/TypeError.cpp $(SRCDIR)/TypeError.hpp
 
 $(BUILDDIR)/Value.o: $(SRCDIR)/Value.cpp $(SRCDIR)/Value.hpp
 	$(CC) $(CFLAGS) $(SRCDIR)/Value.cpp -o $(BUILDDIR)/Value.o
+
+$(BUILDDIR)/NumberValue.o: $(addprefix $(SRCDIR)/,NumberValue.cpp \
+NumberValue.hpp TypeError.hpp Value.hpp)
+	$(CC) $(CFLAGS) $(SRCDIR)/NumberValue.cpp -o $(BUILDDIR)/NumberValue.o
+
+$(BUILDDIR)/FunctionValue.o: $(addprefix $(SRCDIR)/,FunctionValue.cpp \
+FunctionValue.hpp Evaluator.hpp TypeError.hpp Value.hpp)
+	$(CC) $(CFLAGS) $(SRCDIR)/FunctionValue.cpp -o $(BUILDDIR)/FunctionValue.o
+
+$(BUILDDIR)/Evaluator.o: $(addprefix $(SRCDIR)/,Evaluator.cpp Evaluator.hpp \
+Context.hpp NumberValue.hpp ParseError.hpp Token.hpp TokenTree.hpp Value.hpp)
+	$(CC) $(CFLAGS) $(SRCDIR)/Evaluator.cpp -o $(BUILDDIR)/Evaluator.o
 
 # Tests Directory Object Files
 $(BUILDDIR)/TestToken.o: $(addprefix $(TESTSDIR)/,TestToken.cpp TestToken.hpp \
