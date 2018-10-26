@@ -12,7 +12,13 @@ public:
   typedef std::variant<std::runtime_error, Pointer> OrError;
 
   template <typename T>
-  std::optional<T> castValue() const;
+  std::optional<const T> castValue() const {
+    const auto result = dynamic_cast<const T*>(this);
+    if (result == nullptr) {
+      return {};
+    }
+    return { *result };
+  }
 
   virtual OrError call(Pointer arg) const = 0;
   virtual ~Value() {};

@@ -9,6 +9,7 @@
 
 Context::Context() {}
 Context::Context(Context::Pointer parent): parentContext(parent) {}
+Context::Context(Context::ValueMap initialValues): values { initialValues } {}
 Value::OrError Context::getValue(const std::string &identifier) {
   auto iterator = values.find(identifier);
   if (iterator == values.end()) {

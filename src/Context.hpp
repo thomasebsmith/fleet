@@ -12,14 +12,16 @@ class Context {
 
 public:
   typedef std::shared_ptr<Context> Pointer;
+  typedef std::unordered_map<std::string, const Value::Pointer> ValueMap;
 
 private:
-  std::unordered_map<std::string, const Value::Pointer> values;
+  ValueMap values;
   Pointer parentContext;
 
 public:
   Context();
   Context(Pointer parent);
+  Context(ValueMap initialValues);
   Value::OrError getValue(const std::string &identifier);
   std::optional<std::runtime_error> define(
     const std::string &identifier, Value::Pointer value
