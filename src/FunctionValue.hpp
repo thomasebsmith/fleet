@@ -24,6 +24,7 @@ public:
     const TokenTree &ast, const Context::Pointer &context, std::string param
   );
   FunctionValue(const NativeAction &func, const Context::Pointer &context);
+  ~FunctionValue() = default;
   Value::OrError call(Value::Pointer arg) const;
   bool getIsNative() const;
 };

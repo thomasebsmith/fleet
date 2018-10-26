@@ -15,7 +15,7 @@ public:
   std::optional<T> castValue() const;
 
   virtual OrError call(Pointer arg) const = 0;
-  virtual ~Value() = 0;
+  virtual ~Value() {};
 };
 
 #endif

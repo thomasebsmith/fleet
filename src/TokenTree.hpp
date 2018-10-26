@@ -7,6 +7,7 @@
 #include <utility>
 #include <variant>
 #include <vector>
+#include "ParseError.hpp"
 #include "Token.hpp"
 #include "TokenStream.hpp"
 #include "TokenTreeVisitor.hpp"
@@ -36,7 +37,21 @@ public:
   TokenTree(const TokenTree &copyFrom);
 
   template <typename T>
-  T accept(const TokenTreeVisitor<T> &v) const;
+  T accept(const TokenTreeVisitor<T> &v) const {
+    const auto &token = getToken();
+    if (token) {
+      return v.visit(*token);
+    }
+    const auto &functionPair = getFunctionPair();
+    if (functionPair) {
+      return v.visit(functionPair->first, functionPair->second);
+    }
+    const auto &lineList = getLineList();
+    if (lineList) {
+      return v.visit(*lineList);
+    }
+    throw ParseError { "Internal error: Unable to accept TokenTree visitor " };
+  }
 
   std::optional<Token> getToken() const;
   std::optional<std::pair<TokenTree, TokenTree>> getFunctionPair() const;

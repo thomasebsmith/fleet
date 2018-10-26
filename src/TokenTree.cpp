@@ -103,25 +103,6 @@ std::optional<std::vector<TokenTree>> TokenTree::getLineList() const {
   return {};
 }
 
-template <typename T>
-T TokenTree::accept(const TokenTreeVisitor<T> &v) const {
-  const auto &token = getToken();
-  if (token) {
-    v.visit(*token);
-    return;
-  }
-  const auto &functionPair = getFunctionPair();
-  if (functionPair) {
-    v.visit(functionPair->first, functionPair->second);
-    return;
-  }
-  const auto &lineList = getLineList();
-  if (lineList) {
-    v.visit(*lineList);
-    return;
-  }
-}
-
 bool TokenTree::operator==(const TokenTree &rhs) const {
   const auto &leftToken = getToken();
   const auto &rightToken = rhs.getToken();
