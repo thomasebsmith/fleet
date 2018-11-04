@@ -20,6 +20,7 @@ public:
     return { *result };
   }
 
+  virtual operator std::string() const = 0;
   virtual OrError call(Pointer arg) const = 0;
   virtual ~Value() {};
 };

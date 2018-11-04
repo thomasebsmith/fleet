@@ -10,6 +10,7 @@ CC = g++
 CFLAGS = -c -Wall -Werror -Wextra -std=c++17
 TESTSCFLAGS = -iquote $(SRCDIR)
 DEBUGCFLAGS = -g
+LFLAGS = 
 
 CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
 	TokenTree.cpp Context.cpp TypeError.cpp NumberValue.cpp FunctionValue.cpp \
@@ -17,6 +18,8 @@ CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
 OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
 	TokenTree.o Context.o TypeError.o NumberValue.o FunctionValue.o \
 	Evaluator.o DefaultContext.o)
+EXECCFILES = $(addprefix $(SRCDIR)/,execute.cpp)
+EXECOFILES = $(addprefix $(BUILDDIR)/,execute.o)
 TESTCFILES = $(addprefix $(TESTSDIR)/,TestToken.cpp TestTokenStream.cpp \
 	TestTokenTree.cpp Tester.cpp tests.cpp)
 TESTOFILES = $(addprefix $(BUILDDIR)/,TestToken.o TestTokenStream.o \
@@ -30,12 +33,12 @@ default: $(TARGET)
 debug: CFLAGS += $(DEBUGCFLAGS)
 debug: $(TARGET)
 
-$(TARGET): $(BUILDDIR) $(OFILES)
-	$(CC) -o $(TARGET) $(OFILES)
+$(TARGET): $(BUILDDIR) $(OFILES) $(EXECOFILES)
+	$(CC) $(LFLAGS) -o $(TARGET) $(OFILES) $(EXECOFILES)
 
 tests: CFLAGS += $(TESTSCFLAGS)
 tests: $(BUILDDIR) $(OFILES) $(TESTOFILES)
-	$(CC) -o $(TESTTARGET) $(OFILES) $(TESTOFILES)
+	$(CC) $(LFLAGS) -o $(TESTTARGET) $(OFILES) $(TESTOFILES)
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
@@ -82,6 +85,10 @@ $(BUILDDIR)/DefaultContext.o: $(addprefix $(SRCDIR)/,DefaultContext.cpp \
 DefaultContext.hpp Context.hpp FunctionValue.hpp NumberValue.hpp TypeError.hpp \
 Value.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/DefaultContext.cpp -o $(BUILDDIR)/DefaultContext.o
+
+$(BUILDDIR)/execute.o: $(addprefix $(SRCDIR)/,execute.cpp TokenStream.hpp \
+TokenTree.hpp Evaluator.hpp)
+	$(CC) $(CFLAGS) $(SRCDIR)/execute.cpp -o $(BUILDDIR)/execute.o
 
 # Tests Directory Object Files
 $(BUILDDIR)/TestToken.o: $(addprefix $(TESTSDIR)/,TestToken.cpp TestToken.hpp \

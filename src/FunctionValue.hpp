@@ -27,6 +27,7 @@ public:
   ~FunctionValue() = default;
   Value::OrError call(Value::Pointer arg) const;
   bool getIsNative() const;
+  operator std::string() const;
 };
 
 #endif

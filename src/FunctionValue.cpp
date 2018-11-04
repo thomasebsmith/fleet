@@ -25,3 +25,10 @@ Value::OrError FunctionValue::call(Value::Pointer arg) const {
 bool FunctionValue::getIsNative() const {
   return isNative;
 }
+
+FunctionValue::operator std::string() const {
+  if (getIsNative()) {
+    return std::string { "<Native Function>" };
+  }
+  return std::string { "<Function>" };
+}

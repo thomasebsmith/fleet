@@ -31,8 +31,10 @@ syntax tree builder are implemented (with accompanying tests).
   ```
   make tests
   ```
-  Note that since the interpreter is not finished, the default target does
-  not work.
+  or simply
+  ```
+  make
+  ```
 
 ## About the Language
 Fleet's philosophy is one of simplicity: its grammar is extremely simple, with

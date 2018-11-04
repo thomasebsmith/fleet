@@ -1,6 +1,7 @@
 #ifndef NUMBERVALUE_HPP
 #define NUMBERVALUE_HPP
 
+#include <string>
 #include "Token.hpp"
 #include "Value.hpp"
 
@@ -13,6 +14,7 @@ public:
   NumberValue(const Token &numberToken);
   ~NumberValue() = default;
   Value::OrError call([[maybe_unused]] Value::Pointer arg) const;
+  operator std::string() const;
   double getRawNumber() const;
 };
 
