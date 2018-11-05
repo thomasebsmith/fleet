@@ -207,7 +207,7 @@ TokenTree TokenTree::build(TokenStream stream) {
                 outputQueue.emplace_back(new TokenTree { t });
               }
               else if (outputQueue.size() == 1) {
-                const auto& lastArg = outputQueue.back();
+                const auto lastArg = outputQueue.back();
                 TokenTree::TreePointer firstArg { new TokenTree { t }};
                 outputQueue.pop_back();
                 outputQueue.emplace_back(new TokenTree {

@@ -2,6 +2,7 @@
 #include <string>
 #include <variant>
 #include <vector>
+#include "DefaultContext.hpp"
 #include "Evaluator.hpp"
 #include "TokenStream.hpp"
 #include "TokenTree.hpp"
@@ -23,7 +24,7 @@ int main(int argc, char **argv) {
   else if (arguments.size() == 3 && arguments.at(1) == "-c") {
     TokenStream tokens { arguments.at(2) };
     TokenTree tree = TokenTree::build(tokens);
-    Evaluator eval { Context::Pointer { new Context() } };
+    Evaluator eval { Context::Pointer { new DefaultContext() } };
     Value::OrError result = eval.evaluate(tree);
     if (std::holds_alternative<Value::Pointer>(result)) {
       std::cout << static_cast<std::string>(

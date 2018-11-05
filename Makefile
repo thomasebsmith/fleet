@@ -87,7 +87,7 @@ Value.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/DefaultContext.cpp -o $(BUILDDIR)/DefaultContext.o
 
 $(BUILDDIR)/execute.o: $(addprefix $(SRCDIR)/,execute.cpp TokenStream.hpp \
-TokenTree.hpp Evaluator.hpp)
+TokenTree.hpp Evaluator.hpp DefaultContext.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/execute.cpp -o $(BUILDDIR)/execute.o
 
 # Tests Directory Object Files
