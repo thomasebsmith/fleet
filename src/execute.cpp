@@ -39,11 +39,17 @@ int main(int argc, char **argv) {
       return 1;
     }
   }
+  else if (arguments.size() == 3 && arguments.at(1) == "-t") {
+    TokenStream tokens { arguments.at(2) };
+    TokenTree tree = TokenTree::build(tokens);
+    std::cout << static_cast<std::string>(tree) << "\n";
+  }
   else {
     std::string executableName {
       arguments.size() >= 1 ? arguments.at(0) : "<executable>"
     };
-    std::cout << "Usage: " << executableName << " [--version] [-c code]\n";
+    std::cout << "Usage: " << executableName;
+    std::cout << " [--version] [-c code] [-t code]\n";
     return 1;
   }
 }

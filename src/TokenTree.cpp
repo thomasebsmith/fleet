@@ -146,10 +146,14 @@ TokenTree::operator std::string() const {
     std::string result = "{";
     for (unsigned int i = 0; i < lines->size(); i++) {
       result += static_cast<std::string>(lines->at(i));
+      if (i + 1 < lines->size()) {
+        result += "; ";
+      }
     }
+    result += "}";
     return result;
   }
-  return "[]";
+  return "{}";
 }
 
 TokenTree TokenTree::build(TokenStream stream) {
