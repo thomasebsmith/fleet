@@ -13,11 +13,11 @@ DEBUGCFLAGS = -g
 LFLAGS = 
 
 CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
-	TokenTree.cpp Context.cpp TypeError.cpp NumberValue.cpp FunctionValue.cpp \
-	Evaluator.cpp DefaultContext.cpp)
+	TokenTree.cpp Context.cpp TypeError.cpp NumberValue.cpp Evaluator.cpp \
+	DefaultContext.cpp)
 OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
-	TokenTree.o Context.o TypeError.o NumberValue.o FunctionValue.o \
-	Evaluator.o DefaultContext.o)
+	TokenTree.o Context.o TypeError.o NumberValue.o Evaluator.o \
+	DefaultContext.o)
 EXECCFILES = $(addprefix $(SRCDIR)/,execute.cpp)
 EXECOFILES = $(addprefix $(BUILDDIR)/,execute.o)
 TESTCFILES = $(addprefix $(TESTSDIR)/,TestToken.cpp TestTokenStream.cpp \
@@ -72,10 +72,6 @@ $(BUILDDIR)/TypeError.o: $(SRCDIR)/TypeError.cpp $(SRCDIR)/TypeError.hpp
 $(BUILDDIR)/NumberValue.o: $(addprefix $(SRCDIR)/,NumberValue.cpp \
 NumberValue.hpp TypeError.hpp Value.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/NumberValue.cpp -o $(BUILDDIR)/NumberValue.o
-
-$(BUILDDIR)/FunctionValue.o: $(addprefix $(SRCDIR)/,FunctionValue.cpp \
-FunctionValue.hpp Evaluator.hpp TypeError.hpp Value.hpp)
-	$(CC) $(CFLAGS) $(SRCDIR)/FunctionValue.cpp -o $(BUILDDIR)/FunctionValue.o
 
 $(BUILDDIR)/Evaluator.o: $(addprefix $(SRCDIR)/,Evaluator.cpp Evaluator.hpp \
 Context.hpp NumberValue.hpp ParseError.hpp Token.hpp TokenTree.hpp Value.hpp)

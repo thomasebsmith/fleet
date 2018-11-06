@@ -16,6 +16,8 @@ public:
   Value::OrError call([[maybe_unused]] Value::Pointer arg) const;
   operator std::string() const;
   double getRawNumber() const;
+  static const std::string name;
+  std::string getName() const;
 };
 
 #endif

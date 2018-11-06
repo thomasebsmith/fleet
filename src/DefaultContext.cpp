@@ -9,34 +9,28 @@
 
 const Context::Pointer DefaultContext::nativeContext { new Context {} };
 
-Value::OrError DefaultContext::nativeAdd(Value::Pointer xPtr) {
-  auto x = xPtr->castValue<NumberValue>();
-  if (!x) {
-    return { TypeError { "Argument to + must be of type Number" } };
-  }
-  return { Value::Pointer { new FunctionValue {
-    FunctionValue::NativeAction {
-      [x](Value::Pointer yPtr)->Value::OrError {
-        auto y = yPtr->castValue<NumberValue>();
-        if (!y) {
-          return {
-            TypeError { "Argument to ((+) _) must be of type Number " }
-          };
+DefaultContext::BiNumberFunc::Return DefaultContext::nativeAdd(
+  const NumberValue &x
+) {
+  return { DefaultContext::BiNumberFunc::ReturnPointer {
+    new DefaultContext::NumberFunc {
+      DefaultContext::NumberFunc::NativeAction {
+        [x](const NumberValue &y)->DefaultContext::NumberFunc::Return {
+          return { DefaultContext::NumberFunc::ReturnPointer {
+            new NumberValue { x.getRawNumber() + y.getRawNumber() }
+          } };
         }
-        return { Value::Pointer {
-          new NumberValue { x->getRawNumber() + y->getRawNumber() }
-        } };
-      }
-    },
-    nativeContext
-  } } };
+      },
+      nativeContext
+    }
+  } };
 }
 
 DefaultContext::DefaultContext(): Context {
   Context::ValueMap {
     { "+", Value::Pointer {
-      new FunctionValue {
-        FunctionValue::NativeAction {
+      new DefaultContext::BiNumberFunc {
+        DefaultContext::BiNumberFunc::NativeAction {
           &DefaultContext::nativeAdd
         },
         nativeContext
