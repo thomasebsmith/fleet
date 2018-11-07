@@ -13,15 +13,19 @@
 #include "TokenTree.hpp"
 #include "TokenTreeVisitor.hpp"
 
-TokenTree::TokenTree(const Token &value): data {value} {}
+TokenTree::TokenTree(const Token &value): data { value } {}
 
 TokenTree::TokenTree(
   const TokenTree::TreePointer &f, const TokenTree::TreePointer &x
 ): data { TokenTree::FunctionPair {f, x} } {}
 
-TokenTree::TokenTree(const TokenTree::LineList &lines): data {lines} {}
+TokenTree::TokenTree(const TokenTree::LineList &lines):
+  data { lines } {}
 
-TokenTree::TokenTree(const TokenTree &copyFrom): data { copyFrom.data } {}
+TokenTree::TokenTree(const TokenTree &copyFrom):
+  data { copyFrom.data } {}
+
+TokenTree::TokenTree(): data { std::monostate {} } {}
 
 // *Nothing* should have a precedence less than 0, since that is reserved for
 // function calls internally.
@@ -103,6 +107,10 @@ std::optional<std::vector<TokenTree>> TokenTree::getLineList() const {
   return {};
 }
 
+bool TokenTree::isImplied() const {
+  return std::holds_alternative<std::monostate>(data);
+}
+
 bool TokenTree::operator==(const TokenTree &rhs) const {
   const auto &leftToken = getToken();
   const auto &rightToken = rhs.getToken();
@@ -173,7 +181,7 @@ TokenTree TokenTree::build(TokenStream stream) {
       case Token::Type::Number:
       case Token::Type::String:
         if (lastWasNonOperatorStack.top()) {
-          if (outputQueue.size() == 0) {
+          if (outputQueue.empty()) {
             throw ParseError("Internal parsing error");
           }
           const auto firstArg = outputQueue.back();
@@ -207,7 +215,12 @@ TokenTree TokenTree::build(TokenStream stream) {
               break;
             }
             else {
-              if (outputQueue.size() == 0) {
+              if (outputQueue.empty()) {
+                outputQueue.emplace_back(new TokenTree { t });
+              }
+              else if (outputQueue.size() == 1 &&
+                       outputQueue.back()->isImplied()) {
+                outputQueue.pop_back();
                 outputQueue.emplace_back(new TokenTree { t });
               }
               else if (outputQueue.size() == 1) {
@@ -240,7 +253,7 @@ TokenTree TokenTree::build(TokenStream stream) {
           }
           lastWasNonOperatorStack.pop();
           if (lastWasNonOperatorStack.top()) {
-            if (outputQueue.size() == 0) {
+            if (outputQueue.empty()) {
               throw ParseError("Internal parsing error");
             }
             const auto next = outputQueue.back();
@@ -269,7 +282,12 @@ TokenTree TokenTree::build(TokenStream stream) {
             if (t.getType() == Token::Type::Grouper) {
               throw ParseError("Unmatched " + t.getValue());
             }
-            if (outputQueue.size() == 0) {
+            if (outputQueue.empty()) {
+              outputQueue.emplace_back(new TokenTree { t });
+            }
+            else if (outputQueue.size() == 1 &&
+                     outputQueue.back()->isImplied()) {
+              outputQueue.pop_back();
               outputQueue.emplace_back(new TokenTree { t });
             }
             else if (outputQueue.size() == 1) {
@@ -307,6 +325,12 @@ TokenTree TokenTree::build(TokenStream stream) {
         lastWasNonOperatorStack.top() = false;
         int precedence = getPrecedence(next.getValue());
         bool associativity = getAssociativity(next.getValue());
+        if (outputQueue.empty()) {
+          outputQueue.emplace_back(new TokenTree {
+            // An implied argument
+          });
+        }
+
         while (!operatorStack.empty() &&
           !std::get<0>(operatorStack.top()).isOpeningGrouper() && (
           std::get<1>(operatorStack.top()) > precedence ||
@@ -316,7 +340,11 @@ TokenTree TokenTree::build(TokenStream stream) {
         )) {
           Token poppedOperator = std::get<0>(operatorStack.top());
           operatorStack.pop();
-          if (outputQueue.size() == 0) {
+          if (outputQueue.empty()) {
+            outputQueue.emplace_back(new TokenTree { poppedOperator });
+          }
+          else if (outputQueue.size() == 1 && outputQueue.back()->isImplied()) {
+            outputQueue.pop_back();
             outputQueue.emplace_back(new TokenTree { poppedOperator });
           }
           else if (outputQueue.size() == 1) {
@@ -361,6 +389,10 @@ TokenTree TokenTree::build(TokenStream stream) {
         throw ParseError("Unmatched " + t.getValue());
       }
       if (outputQueue.size() == 0) {
+        outputQueue.emplace_back(new TokenTree { t });
+      }
+      else if (outputQueue.size() == 1 && outputQueue.back()->isImplied()) {
+        outputQueue.pop_back();
         outputQueue.emplace_back(new TokenTree { t });
       }
       else if (outputQueue.size() == 1) {

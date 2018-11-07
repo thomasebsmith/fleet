@@ -24,10 +24,12 @@ private:
   mutable Evaluator evaluator; // To allow temporary defining of parameters
   bool isNative;
   std::string paramName;
-  
 public:
-  FunctionValue(const NativeAction &func, const Context::Pointer &context):
-    action { func }, evaluator { context }, isNative { true }, paramName {""} {}
+  FunctionValue(
+    const NativeAction &func, const Context::Pointer &context,
+    bool makeNative = true
+  ): action { func }, evaluator { context }, isNative { makeNative },
+    paramName {""} {}
 
   Value::OrError call(Value::Pointer arg) const {
     const auto &castArg = arg->castValue<P>();
@@ -38,9 +40,6 @@ public:
       } };
     }
     if (std::holds_alternative<NativeAction>(action)) {
-      if (!isNative) {
-        return { std::runtime_error { "Internal error: Invalid function" } };
-      }
       const auto &returnVal = (*std::get_if<NativeAction>(&action))(*castArg);
       if (std::holds_alternative<std::runtime_error>(returnVal)) {
         return { *std::get_if<std::runtime_error>(&returnVal) };

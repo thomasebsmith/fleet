@@ -27,7 +27,10 @@ private:
   static std::unordered_map<std::string, bool> associativities;
   static bool defaultAssociativity;
 
-  const std::variant<Token, FunctionPair, LineList> data;
+  // The std::monostate alternative represents an implied argument - i.e.
+  //  one in constructions like (+ 2), where the first argument to (+) is not
+  //  represented by a token.
+  const std::variant<Token, FunctionPair, LineList, std::monostate> data;
 
 public:
 
@@ -35,6 +38,7 @@ public:
   TokenTree(const TreePointer &f, const TreePointer &x);
   TokenTree(const LineList &lines);
   TokenTree(const TokenTree &copyFrom);
+  TokenTree();
 
   template <typename T>
   T accept(const TokenTreeVisitor<T> &v) const {
@@ -50,12 +54,16 @@ public:
     if (lineList) {
       return v.visit(*lineList);
     }
-    throw ParseError { "Internal error: Unable to accept TokenTree visitor " };
+    if (std::holds_alternative<std::monostate>(data)) {
+      return v.visit();
+    }
+    throw ParseError { "Internal error: Unable to accept TokenTree visitor" };
   }
 
   std::optional<Token> getToken() const;
   std::optional<std::pair<TokenTree, TokenTree>> getFunctionPair() const;
   std::optional<std::vector<TokenTree>> getLineList() const;
+  bool isImplied() const;
 
   bool operator==(const TokenTree &rhs) const;
   operator std::string() const;

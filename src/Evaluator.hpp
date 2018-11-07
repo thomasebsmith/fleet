@@ -20,6 +20,7 @@ public:
   Value::OrError visit(const Token &token) const;
   Value::OrError visit(const TokenTree &f, const TokenTree &x) const;
   Value::OrError visit(const std::vector<TokenTree> &lines) const;
+  Value::OrError visit() const;
 };
 
 #endif

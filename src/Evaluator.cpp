@@ -48,13 +48,39 @@ Value::OrError Evaluator::visit(const Token &token) const {
 }
 
 Value::OrError Evaluator::visit(const TokenTree &f, const TokenTree &x) const {
-  const Value::OrError &fValue = f.accept(*this);
-  if (std::holds_alternative<std::runtime_error>(fValue)) {
-    return fValue;
-  }
   const Value::OrError &xValue = x.accept(*this);
   if (std::holds_alternative<std::runtime_error>(xValue)) {
     return xValue;
+  }
+  /*
+  TODO: Implement implied functions
+  const auto &funcTree = f.getFunctionPair();
+  if (funcTree && std::get<1>(*funcTree).isImplied()) {
+    const auto &baseFuncOrErr = std::get<0>(*funcTree).accept(*this);
+    if (std::holds_alternative<std::runtime_error>(baseFuncOrErr)) {
+      return baseFuncOrErr;
+    }
+    const auto &baseFunc = *std::get_if<Value::Pointer>(&baseFuncOrErr);
+    return { Value::Pointer {
+      new FunctionValue<Value::Pointer, Value> {
+        [baseFunc, xValue] (Value::Pointer y) {
+          const auto &firstResultOrErr = baseFunc->call(y);
+          if (std::holds_alternative<std::runtime_error>(firstResultOrErr)) {
+            return firstResultOrErr;
+          }
+          const auto &firstResult = *std::get_if<Value::Pointer>(
+            &firstResultOrErr
+          );
+          return firstResult->call(*std::get_if<Value::Pointer>(&xValue));
+        },
+        evaluationContext,
+      }
+    } };
+  }
+  */
+  const Value::OrError &fValue = f.accept(*this);
+  if (std::holds_alternative<std::runtime_error>(fValue)) {
+    return fValue;
   }
   return (*std::get_if<Value::Pointer>(&fValue))->call(
     *std::get_if<Value::Pointer>(&xValue)
@@ -71,4 +97,8 @@ Value::OrError Evaluator::visit(const std::vector<TokenTree> &lines) const {
     }
   }
   return lastValue;
+}
+
+Value::OrError Evaluator::visit() const {
+  return { ParseError { "Internal error: Invalid implied argument in tree" } };
 }
