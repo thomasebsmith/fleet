@@ -74,7 +74,8 @@ NumberValue.hpp TypeError.hpp Value.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/NumberValue.cpp -o $(BUILDDIR)/NumberValue.o
 
 $(BUILDDIR)/Evaluator.o: $(addprefix $(SRCDIR)/,Evaluator.cpp Evaluator.hpp \
-Context.hpp NumberValue.hpp ParseError.hpp Token.hpp TokenTree.hpp Value.hpp)
+Context.hpp NumberValue.hpp ParseError.hpp Token.hpp TokenTree.hpp Value.hpp \
+FunctionValue.hpp)
 	$(CC) $(CFLAGS) $(SRCDIR)/Evaluator.cpp -o $(BUILDDIR)/Evaluator.o
 
 $(BUILDDIR)/DefaultContext.o: $(addprefix $(SRCDIR)/,DefaultContext.cpp \

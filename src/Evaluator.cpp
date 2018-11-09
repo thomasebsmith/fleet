@@ -3,6 +3,7 @@
 #include <vector>
 #include "Context.hpp"
 #include "Evaluator.hpp"
+#include "FunctionValue.hpp"
 #include "NumberValue.hpp"
 #include "ParseError.hpp"
 #include "Token.hpp"
@@ -48,43 +49,36 @@ Value::OrError Evaluator::visit(const Token &token) const {
 }
 
 Value::OrError Evaluator::visit(const TokenTree &f, const TokenTree &x) const {
-  const Value::OrError &xValue = x.accept(*this);
-  if (std::holds_alternative<std::runtime_error>(xValue)) {
-    return xValue;
+  const Value::OrError &fValueOrErr = f.accept(*this);
+  if (std::holds_alternative<std::runtime_error>(fValueOrErr)) {
+    return fValueOrErr;
   }
-  /*
-  TODO: Implement implied functions
-  const auto &funcTree = f.getFunctionPair();
-  if (funcTree && std::get<1>(*funcTree).isImplied()) {
-    const auto &baseFuncOrErr = std::get<0>(*funcTree).accept(*this);
-    if (std::holds_alternative<std::runtime_error>(baseFuncOrErr)) {
-      return baseFuncOrErr;
-    }
-    const auto &baseFunc = *std::get_if<Value::Pointer>(&baseFuncOrErr);
-    return { Value::Pointer {
-      new FunctionValue<Value::Pointer, Value> {
-        [baseFunc, xValue] (Value::Pointer y) {
-          const auto &firstResultOrErr = baseFunc->call(y);
-          if (std::holds_alternative<std::runtime_error>(firstResultOrErr)) {
-            return firstResultOrErr;
-          }
-          const auto &firstResult = *std::get_if<Value::Pointer>(
-            &firstResultOrErr
-          );
-          return firstResult->call(*std::get_if<Value::Pointer>(&xValue));
-        },
-        evaluationContext,
+  const auto &fValue = *std::get_if<Value::Pointer>(&fValueOrErr);
+
+  if (x.isImplied()) {
+    const auto &maybeReversible = std::dynamic_pointer_cast<
+      ReversibleCallValue
+    >(fValue);
+    if (maybeReversible) {
+      const auto &maybeReversed = maybeReversible->getReverse();
+      if (std::holds_alternative<std::runtime_error>(maybeReversed)) {
+        return maybeReversed;
       }
+      const auto &reversed = *std::get_if<Value::Pointer>(&maybeReversed);
+      return reversed;
+    }
+    return { TypeError {
+      std::string { "Cannot reverse value of type " } + fValue->getName()
     } };
   }
-  */
-  const Value::OrError &fValue = f.accept(*this);
-  if (std::holds_alternative<std::runtime_error>(fValue)) {
-    return fValue;
+
+  const Value::OrError &xValueOrErr = x.accept(*this);
+  if (std::holds_alternative<std::runtime_error>(xValueOrErr)) {
+    return xValueOrErr;
   }
-  return (*std::get_if<Value::Pointer>(&fValue))->call(
-    *std::get_if<Value::Pointer>(&xValue)
-  );
+  const auto &xValue = *std::get_if<Value::Pointer>(&xValueOrErr);
+
+  return fValue->call(xValue);
 }
 
 Value::OrError Evaluator::visit(const std::vector<TokenTree> &lines) const {

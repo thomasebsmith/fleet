@@ -1,6 +1,7 @@
 #ifndef DEFAULTCONTEXT_HPP
 #define DEFAULTCONTEXT_HPP
 
+#include <memory>
 #include "Context.hpp"
 #include "FunctionValue.hpp"
 #include "NumberValue.hpp"
@@ -12,7 +13,7 @@ public:
   typedef FunctionValue<NumberValue, NumberFunc> BiNumberFunc;
 private:
   static const Context::Pointer nativeContext;
-  static BiNumberFunc::Return nativeAdd(const NumberValue &x);
+  static BiNumberFunc::Return nativeAdd(const std::shared_ptr<NumberValue> &x);
 
 public:
   DefaultContext();
