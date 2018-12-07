@@ -1,3 +1,8 @@
+// File: src/TokenStream.cpp
+// Purpose: A TokenStream converts a string into a sequence of Tokens (i.e.
+//  the smallest units of Fleet syntax). For more documentation, see
+//  src/TokenStream.hpp
+
 #include <cctype>
 #include <optional>
 #include <string>
@@ -10,14 +15,16 @@ TokenStream::TokenStream(std::string codeString): code(codeString) {
   // declarations.
 }
 
+// This method returns a boolean indicating whether a given character is
+//  considered to be whitespace in Fleet.
 bool TokenStream::isblank(char c) {
   return c == ' ' || c == '\n' || c == '\t' || c == '\r' || c ==  '\f' ||
     c == '\v';
 }
 
-// This method queues the next token from the code string into the private
-// variable nextToken. This method *must* put a non-null value into nextToken
-// unless the code string has been exhausted.
+// This method queues the next Token from the code string into the private
+//  variable nextToken. This method *must* put a non-null value into nextToken
+//  unless the code string has been exhausted.
 void TokenStream::queueNext() {
   if (nextToken) {
     return;
@@ -60,6 +67,9 @@ void TokenStream::queueNext() {
   }
 }
 
+// This method returns the next Token; however, it does not change the "current
+//  Token" to the next Token. I.e., calling peek() many times will have the
+//  same result if next() is not used.
 Token TokenStream::peek() {
   if (!nextToken) {
     queueNext();
@@ -73,6 +83,8 @@ Token TokenStream::peek() {
   return *nextToken;
 }
 
+// This method returns the next Token and changes the "current Token" to the
+//  next Token after that.
 Token TokenStream::next() {
   // Get the next token
   Token token = peek(); 
@@ -82,6 +94,9 @@ Token TokenStream::next() {
   return token;
 }
 
+// This method returns a boolean indicating whether the TokenStream is
+//  exhausted (i.e. whether all Tokens have been extracted from the code
+//  string).
 bool TokenStream::hasNext() {
   if (!nextToken) {
     queueNext();
@@ -89,6 +104,9 @@ bool TokenStream::hasNext() {
   return !!nextToken;
 }
 
+// This method returns all whitespace at the beginning of the string and moves
+//  the beginning of the string to after the whitespace. New lines are not
+//  counted as whitespace for this method.
 std::string TokenStream::takeWhitespace() {
   int originalIndex = index;
   char c;
@@ -102,6 +120,7 @@ std::string TokenStream::takeWhitespace() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+// This method returns all characters up to but not including a new line.
 std::string TokenStream::takeComment() {
   int originalIndex = index;
   while (index < code.length() && code.at(index) != '\n') {
@@ -110,6 +129,7 @@ std::string TokenStream::takeComment() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+// This method returns the next character at the beginning of the string.
 std::string TokenStream::takeGrouper() {
   if (index >= code.length()) {
     return "";
@@ -118,6 +138,10 @@ std::string TokenStream::takeGrouper() {
   return code.substr(index - 1, 1);
 }
 
+// This method returns the next identifier at the beginning of the string.
+// An identifier is a sequence of alphanumeric characters or underscores. It
+//  should not begin with a number; however, this condition is not checked
+//  by this function.
 std::string TokenStream::takeIdentifier() {
   int originalIndex = index;
   char c;
@@ -131,6 +155,7 @@ std::string TokenStream::takeIdentifier() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+// This method returns the next character at the beginning of the string.
 std::string TokenStream::takeLineBreak() {
   if (index >= code.length()) {
     return "";
@@ -139,6 +164,8 @@ std::string TokenStream::takeLineBreak() {
   return code.substr(index - 1, 1);
 }
 
+// This method returns the number at the beginning of the string. A number is
+//  a sequence of 0-9 numerals with at most 1 . in the sequence as well.
 std::string TokenStream::takeNumber() {
   int originalIndex = index;
   char c;
@@ -156,6 +183,9 @@ std::string TokenStream::takeNumber() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+// This method returns the operator at the beginning of the string. An operator
+//  is a sequence of non-alphanumeric characters that are also not groupers or
+//  whitespace or quotes.
 std::string TokenStream::takeOperator() {
   int originalIndex = index;
   char c;
@@ -171,6 +201,10 @@ std::string TokenStream::takeOperator() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+// This method returns the string at the beginning of the code string being
+//  interpreted. A string starts with a quote (either " or ') and ends with the
+//  same character. Quotes can also be contained in a string if escaped by a
+//  backslash.
 std::string TokenStream::takeString() {
   if (index >= code.length()) {
     return "";
@@ -200,6 +234,8 @@ std::string TokenStream::takeString() {
   return code.substr(originalIndex, index - originalIndex);
 }
 
+// This method returns the string starting with a backslash and containing
+//  the next character as well (e.g. \n).
 std::string TokenStream::takeEscape() {
   if (index >= code.length()) {
     return "";
