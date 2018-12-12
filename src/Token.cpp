@@ -105,5 +105,5 @@ Token::operator std::string() const {
       typeString = "String";
       break;
   }
-  return std::string("(" + typeString + ": " + getValue());
+  return std::string("(" + typeString + ": " + getValue() + ")");
 }

@@ -171,13 +171,13 @@ bool TokenTree::operator==(const TokenTree &rhs) const {
 }
 
 // This operator returns the string representation of a given TokenTree. The
-//  string representation is formed as [Token], [f, x], or {line; line...}
+//  string representation is formed as (Token), [f, x], or {line; line...}
 //  depending on the variant of TokenTree.
 TokenTree::operator std::string() const {
-  // Tokens are represented as [Token].
+  // Tokens are represented as (Token).
   const auto &token = getToken();
   if (token) {
-    return std::string("[") + static_cast<std::string>(*token) + "]";
+    return static_cast<std::string>(*token);
   }
 
   // Function pairs are represented as [f, x].
