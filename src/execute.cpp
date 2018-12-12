@@ -1,3 +1,8 @@
+// File: src/execute.cpp
+// Purpose: This file contains the entry point for the main Fleet executable
+//  (i.e. it contains the main function). It parses command line arguments
+//  and appropriately executes Fleet code.
+
 #include <iostream>
 #include <string>
 #include <variant>
@@ -7,6 +12,8 @@
 #include "TokenStream.hpp"
 #include "TokenTree.hpp"
 
+// parseArguments(argc, argv) - Creates a vector of strings from the raw
+//  command line arguments.
 std::vector<std::string> parseArguments(int argc, char **argv) {
   std::vector<std::string> arguments;
   for (int i = 0; i < argc; i++) {
@@ -15,6 +22,13 @@ std::vector<std::string> parseArguments(int argc, char **argv) {
   return arguments;
 }
 
+// main(argc, argv) - The entry point for the main Fleet executable.
+// Command line syntax:
+//  executable_name [--version | -c code | -t code ]
+//  --version - Prints the version of Fleet being used and the author's name.
+//  -c code   - Executes `code` and prints the result or an error.
+//  -t code   - Creates an AST of `code` and prints its string representation.
+//  (With any other syntax, usage help is printed).
 int main(int argc, char **argv) {
   std::vector<std::string> arguments = parseArguments(argc, argv);
   if (arguments.size() == 2 && arguments.at(1) == "--version") {

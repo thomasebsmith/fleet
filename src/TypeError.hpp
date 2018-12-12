@@ -1,4 +1,4 @@
-// File: TypeError.hpp
+// File: src/TypeError.hpp
 // Purpose: Header file for TypeErrors, which are a type of runtime_error
 //  occurring when code mismatches types.
 
