@@ -1,5 +1,5 @@
 // File: src/TokenTree.cpp
-// Purpose: Source file for TokenTrees, which represent a structured tree of
+// Purpose: Header file for TokenTrees, which represent a structured tree of
 //  Fleet Tokens. A TokenTree can be composed of one or more lines of
 //  TokenTrees, a function and its argument, or a Token. Technically, TokenTrees
 //  can also be "implied" - i.e. they represent implicit arguments to a function
