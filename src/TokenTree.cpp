@@ -15,10 +15,10 @@
 #include <utility>
 #include <variant>
 #include <vector>
+#include "TokenTree.hpp"
 #include "ParseError.hpp"
 #include "Token.hpp"
 #include "TokenStream.hpp"
-#include "TokenTree.hpp"
 #include "TokenTreeVisitor.hpp"
 
 // Constructors

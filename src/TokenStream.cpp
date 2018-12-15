@@ -6,9 +6,9 @@
 #include <cctype>
 #include <optional>
 #include <string>
+#include "TokenStream.hpp"
 #include "ParseError.hpp"
 #include "Token.hpp"
-#include "TokenStream.hpp"
 
 TokenStream::TokenStream(std::string codeString): code(codeString) {
   // All members are initialized in the initializer list above or in their

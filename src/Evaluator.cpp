@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <variant>
 #include <vector>
-#include "Context.hpp"
 #include "Evaluator.hpp"
+#include "Context.hpp"
 #include "FunctionValue.hpp"
 #include "NumberValue.hpp"
 #include "ParseError.hpp"

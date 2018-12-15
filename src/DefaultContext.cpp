@@ -6,8 +6,8 @@
 #include <functional>
 #include <memory>
 #include <optional>
-#include "Context.hpp"
 #include "DefaultContext.hpp"
+#include "Context.hpp"
 #include "FunctionValue.hpp"
 #include "NumberValue.hpp"
 #include "TypeError.hpp"
