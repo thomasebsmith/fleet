@@ -34,8 +34,9 @@ public:
 private:
   static const Context::Pointer nativeContext;
   static Value::Pointer createBiNumberFunc(NativeBiNumber func);
-  static Value::Pointer add;
-  static Value::Pointer multiply;
+  static const Value::Pointer add;
+  static const Value::Pointer multiply;
+  static const Value::Pointer pow;
 
 public:
   // DefaultContext - The default constructor. Creates a Context with all the

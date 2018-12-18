@@ -3,6 +3,7 @@
 //  containing the default (built-in) global values. See src/DefaultContext.hpp
 //  for more documentation.
 
+#include <cmath>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -51,7 +52,8 @@ Value::Pointer DefaultContext::createBiNumberFunc(
 //  a NumberValue and returns a FunctionValue which takes another NumberValue
 //  and returns a pointer containing a number value which is the sum
 //  of those two numbers.
-Value::Pointer DefaultContext::add = DefaultContext::createBiNumberFunc([](
+const Value::Pointer DefaultContext::add =
+DefaultContext::createBiNumberFunc([](
   const std::shared_ptr<NumberValue> &x,
   const std::shared_ptr<NumberValue> &y) ->
   DefaultContext::NumberFunc::ReturnPointer {
@@ -62,7 +64,7 @@ Value::Pointer DefaultContext::add = DefaultContext::createBiNumberFunc([](
 
 // This function is defined as `*` in DefaultContexts. It returns the product
 //  of its two arguments.
-Value::Pointer DefaultContext::multiply =
+const Value::Pointer DefaultContext::multiply =
   DefaultContext::createBiNumberFunc([](
     const std::shared_ptr<NumberValue> &x,
     const std::shared_ptr<NumberValue> &y) ->
@@ -72,11 +74,23 @@ Value::Pointer DefaultContext::multiply =
   } };
 });
 
+// This function is defined as `^` in DefaultContexts. It returns its first
+//  argument raised to the power of its second argument.
+const Value::Pointer DefaultContext::pow =
+  DefaultContext::createBiNumberFunc([](
+    const std::shared_ptr<NumberValue> &x,
+    const std::shared_ptr<NumberValue> &y) ->
+    DefaultContext::NumberFunc::ReturnPointer {
+  return { DefaultContext::NumberFunc::ReturnPointer {
+    new NumberValue { std::pow(x->getRawNumber(), y->getRawNumber()) }
+  } };
+});
 
 // The default constructor creates a Context containing all the default values.
 DefaultContext::DefaultContext(): Context {
   Context::ValueMap {
     { "+", DefaultContext::add },
-    { "*", DefaultContext::multiply }
+    { "*", DefaultContext::multiply },
+    { "^", DefaultContext::pow }
   }
 } {}
