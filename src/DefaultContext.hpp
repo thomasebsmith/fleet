@@ -23,9 +23,18 @@ public:
   // BiNumberFunc is used as a type alias for FunctionValues that take two
   //  numbers and return a number (e.g. `+`).
   typedef FunctionValue<NumberValue, NumberFunc> BiNumberFunc;
+
+  // A NativeBiNumber is a function taking two NumberValues and returning
+  //  another one.
+  typedef std::function<NumberFunc::ReturnPointer(
+    const std::shared_ptr<NumberValue> &,
+    const std::shared_ptr<NumberValue> &
+  )> NativeBiNumber;
+
 private:
   static const Context::Pointer nativeContext;
-  static BiNumberFunc::Return nativeAdd(const std::shared_ptr<NumberValue> &x);
+  static Value::Pointer createBiNumberFunc(NativeBiNumber func);
+  static Value::Pointer add;
 
 public:
   // DefaultContext - The default constructor. Creates a Context with all the
