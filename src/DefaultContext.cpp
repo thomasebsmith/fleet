@@ -60,9 +60,23 @@ Value::Pointer DefaultContext::add = DefaultContext::createBiNumberFunc([](
   } };
 });
 
+// This function is defined as `*` in DefaultContexts. It returns the product
+//  of its two arguments.
+Value::Pointer DefaultContext::multiply =
+  DefaultContext::createBiNumberFunc([](
+    const std::shared_ptr<NumberValue> &x,
+    const std::shared_ptr<NumberValue> &y) ->
+    DefaultContext::NumberFunc::ReturnPointer {
+  return { DefaultContext::NumberFunc::ReturnPointer {
+    new NumberValue { x->getRawNumber() * y->getRawNumber() }
+  } };
+});
+
+
 // The default constructor creates a Context containing all the default values.
 DefaultContext::DefaultContext(): Context {
   Context::ValueMap {
-    { "+", DefaultContext::add }
+    { "+", DefaultContext::add },
+    { "*", DefaultContext::multiply }
   }
 } {}
