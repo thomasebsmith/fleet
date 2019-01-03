@@ -39,6 +39,7 @@ public:
 
   // name/getName() - Returns "Number", the name of a NumberValue-type value.
   static const std::string name;
+  static std::string getClassName();
   std::string getName() const;
 };
 

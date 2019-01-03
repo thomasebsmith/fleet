@@ -8,6 +8,7 @@
 #include <memory>
 #include <optional>
 #include <stdexcept>
+#include <string>
 #include <variant>
 
 class Value {
@@ -31,6 +32,13 @@ public:
     return { *result };
   }
 
+  // canCastValue<T>() - Returns a boolean indicating whether the Value is
+  //  internally of type T.
+  template <typename T>
+  bool canCastValue() const {
+    return dynamic_cast<const T *>(this) != nullptr;
+  }
+
   // virtual std::string() - Returns the string representation of the Value.
   virtual operator std::string() const = 0;
 
@@ -41,8 +49,13 @@ public:
   // virtual getName() - Returns the name of the type (e.g. Number, String).
   virtual std::string getName() const = 0;
 
+  // static getClassName() - Returns the name of the type (e.g. Number, String)
+  static std::string getClassName();
+
   // virtual ~Value() - Virtual destructor. Must be implemented by subclasses.
   virtual ~Value() {};
+
+  static const std::string name;
 };
 
 #endif

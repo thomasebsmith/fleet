@@ -31,3 +31,7 @@ const std::string IdentifierValue::name { "Identifier" };
 std::string IdentifierValue::getName() const {
   return IdentifierValue::name;
 }
+
+std::string IdentifierValue::getClassName() {
+  return IdentifierValue::name;
+}

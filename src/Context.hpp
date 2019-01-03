@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include <variant>
+#include "IdentifierValue.hpp"
 #include "Value.hpp"
 
 class Context {
@@ -51,6 +52,10 @@ public:
   //  it returns an empty optional.
   std::optional<std::runtime_error> define(
     const std::string &identifier, Value::Pointer value
+  );
+
+  std::optional<std::runtime_error> define(
+    const std::shared_ptr<IdentifierValue> &identifier, Value::Pointer value
   );
 
   // getParentContext() - Returns a Context::Pointer to the parent Context (i.e.

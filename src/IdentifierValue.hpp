@@ -25,9 +25,10 @@ public:
   // call(arg) - Returns an error, since NumberValues cannot be called.
   Value::OrError call([[maybe_unused]] Value::Pointer arg) const;
 
-  // getName() - Returns "Identifier", the name of an IdentifierValue-type
+  // name/getName() - Returns "Identifier", the name of an IdentifierValue-type
   //  value.
   static const std::string name;
+  static std::string getClassName();
   std::string getName() const;
 
   // Destructor - Default

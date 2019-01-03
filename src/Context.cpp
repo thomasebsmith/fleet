@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include "Context.hpp"
+#include "IdentifierValue.hpp"
 #include "TypeError.hpp"
 #include "Value.hpp"
 
@@ -54,6 +55,14 @@ std::optional<std::runtime_error> Context::define(
   return {};
 }
 
+std::optional<std::runtime_error> Context::define(
+  const std::shared_ptr<IdentifierValue> &identifier, Value::Pointer value
+) {
+  if (value || true) {
+    // TODO!!
+    return { TypeError { static_cast<std::string>(*identifier) + " is TODO" } };
+  }
+}
 // getParentContext() returns a pointer to the parent context - i.e. the context
 //  containing this one. This *can* return a *nil pointer* if there is no parent
 //  context!!

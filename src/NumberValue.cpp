@@ -40,3 +40,7 @@ const std::string NumberValue::name { "Number" };
 std::string NumberValue::getName() const {
   return NumberValue::name;
 }
+
+std::string NumberValue::getClassName() {
+  return NumberValue::name;
+}

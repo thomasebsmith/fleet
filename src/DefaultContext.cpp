@@ -10,6 +10,7 @@
 #include "DefaultContext.hpp"
 #include "Context.hpp"
 #include "FunctionValue.hpp"
+#include "IdentifierValue.hpp"
 #include "NumberValue.hpp"
 #include "TypeError.hpp"
 #include "Value.hpp"
@@ -19,45 +20,16 @@
 //  variables rather than Contexts), so this is used.
 const Context::Pointer DefaultContext::nativeContext { new Context {} };
 
-// Each call of a BiNumberFunc creates a new lambda function encased in a
-//  FunctionValue. For example, 2 + 3 will evaluate to ((+) 2) 3, so (+) 2
-//  will be its own unique FunctionValue. This is probably inefficient and is
-//  not currently optimized.
-Value::Pointer DefaultContext::createBiNumberFunc(
-  DefaultContext::NativeBiNumber func) {
-  const auto lambdaFunc = [func](const std::shared_ptr<NumberValue> &x) {
-    return DefaultContext::BiNumberFunc::ReturnPointer {
-      new DefaultContext::NumberFunc {
-        DefaultContext::NumberFunc::NativeAction {
-          [x, func](const std::shared_ptr<NumberValue> &y) ->
-          DefaultContext::NumberFunc::Return {
-            return func(x, y);
-          }
-        },
-        nativeContext
-      }
-    };
-  };
-  return Value::Pointer {
-    new DefaultContext::BiNumberFunc {
-      DefaultContext::BiNumberFunc::NativeAction {
-        lambdaFunc
-      },
-      nativeContext
-    }
-  };
-}
-
 // This function is defined as `+` in DefaultContexts. It takes a Pointer to
 //  a NumberValue and returns a FunctionValue which takes another NumberValue
 //  and returns a pointer containing a number value which is the sum
 //  of those two numbers.
 const Value::Pointer DefaultContext::add =
-DefaultContext::createBiNumberFunc([](
+DefaultContext::createBiFunc<NumberValue, NumberValue, NumberValue>([](
   const std::shared_ptr<NumberValue> &x,
   const std::shared_ptr<NumberValue> &y) ->
-  DefaultContext::NumberFunc::ReturnPointer {
-  return { DefaultContext::NumberFunc::ReturnPointer {
+  FunctionValue<NumberValue, NumberValue>::ReturnPointer {
+  return { FunctionValue<NumberValue, NumberValue>::ReturnPointer {
     new NumberValue { x->getRawNumber() + y->getRawNumber() }
   } };
 });
@@ -65,11 +37,11 @@ DefaultContext::createBiNumberFunc([](
 // This function is defined as `*` in DefaultContexts. It returns the product
 //  of its two arguments.
 const Value::Pointer DefaultContext::multiply =
-  DefaultContext::createBiNumberFunc([](
+  DefaultContext::createBiFunc<NumberValue, NumberValue, NumberValue>([](
     const std::shared_ptr<NumberValue> &x,
     const std::shared_ptr<NumberValue> &y) ->
-    DefaultContext::NumberFunc::ReturnPointer {
-  return { DefaultContext::NumberFunc::ReturnPointer {
+    FunctionValue<NumberValue, NumberValue>::ReturnPointer {
+  return { FunctionValue<NumberValue, NumberValue>::ReturnPointer {
     new NumberValue { x->getRawNumber() * y->getRawNumber() }
   } };
 });
@@ -77,13 +49,25 @@ const Value::Pointer DefaultContext::multiply =
 // This function is defined as `^` in DefaultContexts. It returns its first
 //  argument raised to the power of its second argument.
 const Value::Pointer DefaultContext::pow =
-  DefaultContext::createBiNumberFunc([](
+  DefaultContext::createBiFunc<NumberValue, NumberValue, NumberValue>([](
     const std::shared_ptr<NumberValue> &x,
     const std::shared_ptr<NumberValue> &y) ->
-    DefaultContext::NumberFunc::ReturnPointer {
-  return { DefaultContext::NumberFunc::ReturnPointer {
+    FunctionValue<NumberValue, NumberValue>::ReturnPointer {
+  return { FunctionValue<NumberValue, NumberValue>::ReturnPointer {
     new NumberValue { std::pow(x->getRawNumber(), y->getRawNumber()) }
   } };
+});
+
+// This function is defined as `=` in DefaultContexts. It sets its first
+//  argument to be equal to its second argument.
+const Value::Pointer DefaultContext::set =
+  DefaultContext::createBiFunc<IdentifierValue, Value, Value>([](
+    const std::shared_ptr<IdentifierValue> &id,
+    const Value::Pointer &value,
+    const Context::Pointer &context) ->
+    Value::Pointer {
+  context->define(id, value);
+  return value;
 });
 
 // The default constructor creates a Context containing all the default values.
@@ -91,6 +75,7 @@ DefaultContext::DefaultContext(): Context {
   Context::ValueMap {
     { "+", DefaultContext::add },
     { "*", DefaultContext::multiply },
-    { "^", DefaultContext::pow }
+    { "^", DefaultContext::pow },
+    { "=", DefaultContext::set }
   }
 } {}

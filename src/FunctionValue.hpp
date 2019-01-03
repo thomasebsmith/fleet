@@ -40,10 +40,11 @@ public:
   // These typedefs can be used in place of their respective types.
   typedef std::shared_ptr<R> ReturnPointer;
   typedef std::variant<std::runtime_error, ReturnPointer> Return;
-  typedef std::function<Return(std::shared_ptr<P>)> NativeAction;
+  typedef std::function<Return(std::shared_ptr<P>, Context::Pointer)> NativeAction;
   typedef std::variant<TokenTree, NativeAction> Action;
 private:
   const Action action;
+  const Context::Pointer internalContext;
   mutable Evaluator evaluator; // To allow temporary defining of parameters
   bool isNative;
   std::string paramName;
@@ -54,8 +55,8 @@ public:
   FunctionValueBase(
     const NativeAction &func, const Context::Pointer &context,
     bool makeNative = true
-  ): action { func }, evaluator { context }, isNative { makeNative },
-    paramName {""} {}
+  ): action { func }, internalContext { context }, evaluator { context },
+    isNative { makeNative }, paramName {""} {}
   
   // getReverse() - Functions cannot be reversed unless they return functions.
   //  A specific subclass is used for this case, so by default, functions cannot
@@ -74,10 +75,9 @@ public:
   Value::OrError call(Value::Pointer arg) const {
     // Attempt to cast arg to the appropriate parameter type. If it cannot be
     //  cast, return an error.
-    const auto &castArg = arg->castValue<P>();
-    if (!castArg) {
+    if (!arg->canCastValue<P>()) {
       return { TypeError {
-        std::string { "Expected argument of type " } + P::name +
+        std::string { "Expected argument of type " } + P::getClassName() +
           " but got argument of type " + arg->getName()
       } };
     }
@@ -86,7 +86,9 @@ public:
     //  to the argument.
     const auto &castArgPtr = std::dynamic_pointer_cast<P>(arg);
     if (std::holds_alternative<NativeAction>(action)) {
-      const auto &returnVal = (*std::get_if<NativeAction>(&action))(castArgPtr);
+      const auto &returnVal = (*std::get_if<NativeAction>(&action))(
+        castArgPtr, internalContext
+      );
       if (std::holds_alternative<std::runtime_error>(returnVal)) {
         return { *std::get_if<std::runtime_error>(&returnVal) };
       }
@@ -103,10 +105,9 @@ public:
       return returnValOrErr;
     }
     Value::Pointer returnVal = *std::get_if<Value::Pointer>(&returnValOrErr);
-    const auto &castReturnVal = returnVal->castValue<R>();
-    if (!castReturnVal) {
+    if (!returnVal->canCastValue<R>()) {
       return { TypeError {
-        std::string { "Expected return value of type " } + R::name +
+        std::string { "Expected return value of type " } + R::getClassName() +
           " but got return value of type " + returnVal->getName()
       } };
     }
@@ -117,8 +118,13 @@ public:
   static const std::string name;
 
   // getName() - Returns a function's type signature as a string.
+  //  Any FunctionValueBase's name (type signature) is the concatenation of its
+  //  parameter type, "->", and its return type
   std::string getName() const {
-      return name;
+    return P::getClassName() + "->" + R::getClassName();
+  }
+  static std::string getClassName() {
+    return P::getClassName() + "->" + R::getClassName();
   }
 
   // Constructor(ast, context, param) - Creates a function with its internal
@@ -181,10 +187,12 @@ public:
     //  result of evaluating the original function with the given parameters.
     return {
       Value::Pointer { new FunctionValue<P2, FunctionValue<P1, RFinal>> {
-        [&] (const std::shared_ptr<P2> &secondParam) -> FirstReturn {
+        [&] (const std::shared_ptr<P2> &secondParam,
+          [[maybe_unused]] const Context::Pointer &context) -> FirstReturn {
           return std::shared_ptr<FunctionValue<P1, RFinal>> {
           new FunctionValue<P1, RFinal> {
-            [&, secondParam] (const std::shared_ptr<P1> &firstParam) ->
+            [&, secondParam] (const std::shared_ptr<P1> &firstParam,
+              [[maybe_unused]] const Context::Pointer &context) ->
               FinalReturn {
               // Call the original function with the first parameter. If it
               //  returns an error, return that error.
@@ -239,10 +247,5 @@ public:
     };
   }
 };
-
-// Any FunctionValueBase's name (type signature) is the concatenation of its
-//  parameter type, "->", and its return type
-template <typename P, typename R>
-const std::string FunctionValueBase<P, R>::name { P::name + "->" + R::name };
 
 #endif
