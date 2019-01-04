@@ -16,7 +16,7 @@ SRCEXT = cpp
 
 CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
 	TokenTree.cpp Context.cpp TypeError.cpp NumberValue.cpp Evaluator.cpp \
-	DefaultContext.cpp IdentifierValue.cpp Value.cpp)
+	DefaultContext.cpp IdentifierValue.cpp Value.cpp MaybeSharedPtr.cpp)
 OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
 	TokenTree.o Context.o TypeError.o NumberValue.o Evaluator.o \
 	DefaultContext.o IdentifierValue.o Value.o)
@@ -67,7 +67,7 @@ $(BUILDDIR)/TokenTree.o: $(addprefix $(SRCDIR)/,TokenTree.cpp TokenTree.hpp \
 ParseError.hpp Token.hpp TokenStream.hpp TokenTreeVisitor.hpp)
 
 $(BUILDDIR)/Context.o: $(addprefix $(SRCDIR)/,Context.cpp Context.hpp \
-TypeError.hpp Value.hpp IdentifierValue.hpp)
+TypeError.hpp Value.hpp IdentifierValue.hpp MaybeSharedPtr.hpp)
 
 $(BUILDDIR)/TypeError.o: $(SRCDIR)/TypeError.cpp $(SRCDIR)/TypeError.hpp
 
@@ -85,7 +85,8 @@ Value.hpp)
 $(BUILDDIR)/IdentifierValue.o: $(addprefix $(SRCDIR)/,IdentifierValue.cpp \
 TokenTree.cpp Value.hpp)
 
-$(BUILDDIR)/Value.o: $(SRCDIR)/Value.cpp $(SRCDIR)/Value.hpp
+$(BUILDDIR)/Value.o: $(addprefix $(SRCDIR)/,Value.cpp Value.hpp TokenTree.hpp \
+Evaluator.hpp)
 
 $(BUILDDIR)/execute.o: $(addprefix $(SRCDIR)/,execute.cpp TokenStream.hpp \
 TokenTree.hpp Evaluator.hpp DefaultContext.hpp)

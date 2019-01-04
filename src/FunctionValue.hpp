@@ -15,6 +15,7 @@
 #include <variant>
 #include "Context.hpp"
 #include "Evaluator.hpp"
+#include "IdentifierValue.hpp"
 #include "TokenTree.hpp"
 #include "TypeError.hpp"
 #include "Value.hpp"
@@ -24,9 +25,9 @@
 class ReversibleCallValue: public Value {
 public:
   // getReverse() - This method must be created by subclasses. It should return
-  //  a version of the Value that, when called with two parameters, produces
-  //  a Value equivalent to when the original Value was called with the
-  //  parameters in the reverse order.
+  //  a version of the Value that, when called with two parameters, produces a
+  //  Value equivalent to when the original Value was called with the parameters
+  //  in the reverse order.
   virtual Value::OrError getReverse() const = 0;
 };
 
@@ -44,7 +45,9 @@ public:
   typedef std::variant<TokenTree, NativeAction> Action;
 private:
   const Action action;
+protected:
   const Context::Pointer internalContext;
+private:
   mutable Evaluator evaluator; // To allow temporary defining of parameters
   bool isNative;
   std::string paramName;
@@ -58,8 +61,8 @@ public:
   ): action { func }, internalContext { context }, evaluator { context },
     isNative { makeNative }, paramName {""} {}
   
-  // getReverse() - Functions cannot be reversed unless they return functions.
-  //  A specific subclass is used for this case, so by default, functions cannot
+  // getReverse() - Functions cannot be reversed unless they return functions. A
+  //  specific subclass is used for this case, so by default, functions cannot
   //  be reversed.
   Value::OrError getReverse() const {
     return {
@@ -132,8 +135,8 @@ public:
   //  as param.
   FunctionValueBase(
     const TokenTree &ast, const Context::Pointer &context, std::string param
-  ): action { ast }, evaluator { context }, isNative { false },
-    paramName { param } {}
+  ): action { ast }, internalContext { context }, evaluator { context },
+    isNative { false }, paramName { param } {}
 
   // getIsNative() - Returns a boolean indicating whether the function should
   //  look like a native function to the code. Functions actually coded with
@@ -167,9 +170,8 @@ class FunctionValue: public FunctionValueBase<P, R> {
 // A FunctionValue that returns a Function can be reversed, but is otherwise
 //  the same as a FunctionValueBase.
 template <typename P1, typename P2, typename RFinal>
-class FunctionValue<P1, FunctionValue<P2, RFinal>>: public FunctionValueBase<
-  P1, FunctionValue<P2, RFinal>
-> {
+class FunctionValueReversible:
+  public FunctionValueBase<P1, FunctionValue<P2, RFinal>> {
 private:
   typedef std::variant<std::runtime_error, std::shared_ptr<RFinal>> FinalReturn;
   typedef std::variant<std::runtime_error, std::shared_ptr<FunctionValue<
@@ -177,8 +179,9 @@ private:
   >>> FirstReturn;
 public:
   using FunctionValueBase<P1, FunctionValue<P2, RFinal>>::FunctionValueBase;
-  // getReverse() - Returns a FunctionValue that when called returns a function
-  //  that takes parameters in the opposite order as the original function.
+  // getReverse() - Returns a FunctionValue that when called returns a
+  //  function that takes parameters in the opposite order as the original
+  //  function.
   Value::OrError getReverse() const {
     // Return a pointer to a FunctionValue created with a lambda function.
     //  This lamdba function takes the second parameter of the original function
@@ -188,12 +191,11 @@ public:
     return {
       Value::Pointer { new FunctionValue<P2, FunctionValue<P1, RFinal>> {
         [&] (const std::shared_ptr<P2> &secondParam,
-          [[maybe_unused]] const Context::Pointer &context) -> FirstReturn {
+          const Context::Pointer &context) -> FirstReturn {
           return std::shared_ptr<FunctionValue<P1, RFinal>> {
           new FunctionValue<P1, RFinal> {
             [&, secondParam] (const std::shared_ptr<P1> &firstParam,
-              [[maybe_unused]] const Context::Pointer &context) ->
-              FinalReturn {
+              [[maybe_unused]] const Context::Pointer &context) -> FinalReturn {
               // Call the original function with the first parameter. If it
               //  returns an error, return that error.
               const auto &firstResultOrErr = this->call(firstParam);
@@ -232,19 +234,44 @@ public:
               }
               return FinalReturn { finalResultCast };
             },
-            // Empty Contexts are used for evaluation since no Context is really
-            //  needed for evaluation of these native functions.
-            Context::Pointer { new Context {} },
+            context,
             // Whether the reversed function is native is determined by whether
             //  the original function was native.
             this->getIsNative()
           }
           };
         },
-        Context::Pointer { new Context {} },
+        FunctionValueBase<P1, FunctionValue<P2, RFinal>>::internalContext,
         this->getIsNative()
       } }
     };
+  }
+};
+
+template <typename R>
+class FunctionValue<IdentifierValue, R>: public FunctionValueBase<
+  IdentifierValue, R> {
+public:
+  using FunctionValueBase<IdentifierValue, R>::FunctionValueBase;
+  using FunctionValueBase<IdentifierValue, R>::call;
+  Value::OrError call(const TokenTree &ast,
+    [[maybe_unused]] const Evaluator *eval) const {
+    return FunctionValueBase<IdentifierValue, R>::call(
+      Value::Pointer { new IdentifierValue { ast } }
+    );
+  }
+};
+
+template <typename P, typename R>
+class FunctionValue<IdentifierValue, FunctionValue<P, R>>:
+  public FunctionValueReversible<IdentifierValue, P, R> {
+  using FunctionValueReversible<IdentifierValue, P, R>::FunctionValueReversible;
+  using FunctionValueReversible<IdentifierValue, P, R>::call;
+  Value::OrError call(const TokenTree &ast,
+    [[maybe_unused]] const Evaluator *eval) const {
+    return FunctionValueReversible<IdentifierValue, P, R>::call(
+      Value::Pointer { new IdentifierValue { ast } }
+    );
   }
 };
 

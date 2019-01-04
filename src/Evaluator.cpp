@@ -28,7 +28,7 @@ Value::OrError Evaluator::evaluate(const TokenTree &ast) {
   removeContextLayer = false;
 
   // Evaluate the tree using this class as a TokenTreeVisitor.
-  const Value::OrError &result = ast.accept(*this);
+  const Value::OrError result = ast.accept(*this);
 
   // Remove the current Context and go to the parent Context if necessary.
   // This should only be necessary if a variable was temporarily defined
@@ -103,15 +103,8 @@ Value::OrError Evaluator::visit(const TokenTree &f, const TokenTree &x) const {
     } };
   }
 
-  // If the argument is not implied, evaluate the argument TokenTree.
-  const Value::OrError &xValueOrErr = x.accept(*this);
-  if (std::holds_alternative<std::runtime_error>(xValueOrErr)) {
-    return xValueOrErr;
-  }
-  const auto &xValue = *std::get_if<Value::Pointer>(&xValueOrErr);
-
   // Return the result of calling the function with the argument.
-  return fValue->call(xValue);
+  return fValue->call(x, this);
 }
 
 // This method converts a vector of TokenTrees into a Value Pointer. It

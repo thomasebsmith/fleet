@@ -58,10 +58,13 @@ std::optional<std::runtime_error> Context::define(
 std::optional<std::runtime_error> Context::define(
   const std::shared_ptr<IdentifierValue> &identifier, Value::Pointer value
 ) {
-  if (value || true) {
-    // TODO!!
-    return { TypeError { static_cast<std::string>(*identifier) + " is TODO" } };
+  auto idString = identifier->getIdentifier(value);
+  if (!idString) {
+    return { TypeError {
+      static_cast<std::string>(*identifier) + " is not a valid identifier"
+    } };
   }
+  return define(*idString, value);
 }
 // getParentContext() returns a pointer to the parent context - i.e. the context
 //  containing this one. This *can* return a *nil pointer* if there is no parent

@@ -8,6 +8,19 @@
 #include <string>
 #include <variant>
 #include "Value.hpp"
+#include "Evaluator.hpp"
+#include "TokenTree.hpp"
+
+Value::OrError Value::call(const TokenTree &ast, const Evaluator *eval) const {
+  // If the argument is not implied, evaluate the argument TokenTree.
+  const Value::OrError &xValueOrErr = ast.accept(*eval);
+  if (std::holds_alternative<std::runtime_error>(xValueOrErr)) {
+    return xValueOrErr;
+  }
+  const auto &xValue = *std::get_if<Value::Pointer>(&xValueOrErr);
+
+  return call(xValue);
+}
 
 const std::string Value::name { "Value" };
 

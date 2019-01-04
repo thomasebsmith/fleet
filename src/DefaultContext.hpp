@@ -20,7 +20,7 @@ public:
   // A NativeBi is a function taking two Values and a Context and returning
   //  a Value.
   template <typename T1, typename T2, typename T3>
-  using NativeBi = std::function<typename FunctionValue<T2, T3>::ReturnPointer(
+  using NativeBi = std::function<typename FunctionValue<T2, T3>::Return(
     const std::shared_ptr<T1> &,
     const std::shared_ptr<T2> &,
     const Context::Pointer &
@@ -28,36 +28,35 @@ public:
 
   template <typename T1, typename T2, typename T3>
   using NativeBiNoContext =
-  std::function<typename FunctionValue<T2, T3>::ReturnPointer(
+  std::function<typename FunctionValue<T2, T3>::Return(
     const std::shared_ptr<T1> &,
     const std::shared_ptr<T2> &
   )>;
 
 private:
-  static const Context::Pointer nativeContext;
-
   // NOTE: Each call of a function creates a new lambda function encased in a
   //  FunctionValue. For example, 2 + 3 will evaluate to ((+) 2) 3, so (+) 2
   //  will be its own unique FunctionValue. This is probably inefficient and is
   //  not currently optimized.
   // This function creates a FunctionValue from a binary native function.
   template <typename T1, typename T2, typename T3>
-  static Value::Pointer createBiFunc(NativeBi<T1, T2, T3> func) {
+  Value::Pointer createBiFunc(NativeBi<T1, T2, T3> func) {
     const auto lambdaFunc = [func](
       const std::shared_ptr<T1> &x,
-      [[maybe_unused]] const Context::Pointer context) {
-      return typename FunctionValue<T1, FunctionValue<T2, T3>>::ReturnPointer {
-        new FunctionValue<T2, T3> {
-          typename FunctionValue<T2, T3>::NativeAction {
-            [x, func](
-              const std::shared_ptr<T2> &y,
-              const Context::Pointer context
-            ) ->
-            typename FunctionValue<T2, T3>::Return {
-              return func(x, y, context);
-            }
-          },
-          nativeContext
+      [[maybe_unused]] const Context::Pointer &context) {
+      return typename FunctionValue<T1, FunctionValue<T2, T3>>::Return {
+        typename FunctionValue<T1, FunctionValue<T2, T3>>::ReturnPointer {
+          new FunctionValue<T2, T3> {
+            typename FunctionValue<T2, T3>::NativeAction {
+              [x, func](
+                const std::shared_ptr<T2> &y,
+                const Context::Pointer &context
+              ) -> typename FunctionValue<T2, T3>::Return {
+                return func(x, y, context);
+              }
+            },
+            Context::Pointer { context }
+          }
         }
       };
     };
@@ -66,13 +65,15 @@ private:
         typename FunctionValue<T1, FunctionValue<T2, T3>>::NativeAction {
           lambdaFunc
         },
-        nativeContext
+        // Create a *RAW POINTER* since a shared_ptr will be created by the
+        //  object that owns this DefaultContext.
+        Context::Pointer { this, true }
       }
     };
   }
 
   template <typename T1, typename T2, typename T3>
-  static Value::Pointer createBiFunc(NativeBiNoContext<T1, T2, T3> func) {
+  Value::Pointer createBiFunc(NativeBiNoContext<T1, T2, T3> func) {
     return createBiFunc<T1, T2, T3>([func](
       const std::shared_ptr<T1> &x,
       const std::shared_ptr<T2> &y,
@@ -81,12 +82,12 @@ private:
     });
   }
 
-  static const Value::Pointer add;
-  static const Value::Pointer multiply;
-  static const Value::Pointer pow;
-  static const Value::Pointer set;
+  const Value::Pointer add;
+  const Value::Pointer multiply;
+  const Value::Pointer pow;
+  const Value::Pointer set;
 
-public:
+  public:
   // DefaultContext - The default constructor. Creates a Context with all the
   //  default functions and values included.
   DefaultContext();

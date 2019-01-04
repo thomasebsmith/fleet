@@ -10,6 +10,9 @@
 #include <stdexcept>
 #include <string>
 #include <variant>
+#include "TokenTree.hpp"
+
+class Evaluator;
 
 class Value {
 public:
@@ -45,6 +48,7 @@ public:
   // virtual call(arg) - Returns the result of calling the Value with the given
   //  argument, or an error if not appropriate.
   virtual OrError call(Pointer arg) const = 0;
+  virtual OrError call(const TokenTree &ast, const Evaluator *eval) const;
 
   // virtual getName() - Returns the name of the type (e.g. Number, String).
   virtual std::string getName() const = 0;

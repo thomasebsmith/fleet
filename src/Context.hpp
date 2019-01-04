@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <variant>
 #include "IdentifierValue.hpp"
+#include "MaybeSharedPtr.hpp"
 #include "Value.hpp"
 
 class Context {
@@ -18,7 +19,7 @@ class Context {
 public:
   // Context::Pointer and Context::ValueMap can be used as type aliases for
   //  the internal ways contexts and value maps are stored in this class.
-  typedef std::shared_ptr<Context> Pointer;
+  typedef MaybeSharedPtr<Context> Pointer;
   typedef std::unordered_map<std::string, const Value::Pointer> ValueMap;
 
 private:
@@ -59,7 +60,7 @@ public:
   );
 
   // getParentContext() - Returns a Context::Pointer to the parent Context (i.e.
-  //  the Context containing this one). DANGER: This method *can* return a *nil
+  //  the Context containing this one). DANGER: This method *can* return a *null
   //  pointer* if there is no parent context!!
   Pointer getParentContext() const;
 };
