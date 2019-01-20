@@ -30,5 +30,14 @@ This project includes an interpreter written in C++.
   ```
   make
   ```
+ 4. Run the resulting executable:
+  ```
+  ./build/fleet
+  ```
+  or
+  ```
+  ./build/testFleet
+  ```
+  depending on what target was built.
 
 For more information about Fleet, visit https://thomasebsmith.github.io/fleet/.

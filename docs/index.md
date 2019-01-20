@@ -35,6 +35,15 @@ syntax tree builder are implemented (with accompanying tests).
   ```
   make
   ```
+ 4. Run the resulting executable:
+  ```
+  ./build/fleet
+  ```
+  or
+  ```
+  ./build/testFleet
+  ```
+  depending on what target was built.
 
 ## About the Language
 Fleet's philosophy is one of simplicity: its grammar is extremely simple, with
