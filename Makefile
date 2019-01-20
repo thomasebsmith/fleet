@@ -35,6 +35,10 @@ default: $(TARGET)
 debug: CFLAGS += $(DEBUGCFLAGS)
 debug: $(TARGET)
 
+.PHONY: debugtests
+debugtests: CFLAGS += $(DEBUGCFLAGS)
+debugtests: tests
+
 $(TARGET): $(BUILDDIR) $(OFILES) $(EXECOFILES)
 	$(CC) $(LFLAGS) -o $(TARGET) $(OFILES) $(EXECOFILES)
 
