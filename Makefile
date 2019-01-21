@@ -110,7 +110,7 @@ $(BUILDDIR)/Tester.o: $(TESTSDIR)/Tester.cpp $(TESTSDIR)/Tester.hpp
 
 $(BUILDDIR)/TestEvaluator.o: $(TESTSDIR)/TestEvaluator.cpp \
 $(TESTSDIR)/Tester.hpp $(addprefix $(SRCDIR)/,Context.hpp Evaluator.hpp \
-NumberValue.hpp TokenTree.hpp Value.hpp)
+NumberValue.hpp TokenTree.hpp Value.hpp DefaultContext.hpp)
 
 $(BUILDDIR)/tests.o: $(addprefix $(TESTSDIR)/,tests.cpp TestToken.hpp \
 TestTokenStream.hpp TestTokenTree.hpp)
