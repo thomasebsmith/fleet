@@ -15,12 +15,14 @@ bool evaluatesApproxTo(const Evaluator &eval, std::string code, double num);
 void testRawNumbers();
 void testWhitespace();
 void testAddition();
+void testMultiplication();
 
 int TestEvaluator::main() {
   Tester tester("Evaluator tests");
   tester.test("Test raw numbers", testRawNumbers);
   tester.test("Test whitespace", testWhitespace);
   tester.test("Test addition", testAddition);
+  tester.test("Test multiplication", testMultiplication);
   return tester.run();
 }
 
@@ -57,4 +59,12 @@ void testAddition() {
   Tester::confirm(evaluatesApproxTo(eval, "0+5", 5.0));
   Tester::confirm(evaluatesApproxTo(eval, "9.88+ 0.13", 10.01));
   Tester::confirm(evaluatesApproxTo(eval, "0.0001 +99.7", 99.7001));
+}
+
+void testMultiplication() {
+  Evaluator eval { new DefaultContext() };
+  Tester::confirm(evaluatesApproxTo(eval, "1 * 3.5", 3.5));
+  Tester::confirm(evaluatesApproxTo(eval, "8 * 8", 64));
+  Tester::confirm(evaluatesApproxTo(eval, "0.85 * 11", 9.35));
+  Tester::confirm(evaluatesApproxTo(eval, "0.999 * 1.15", 1.14885));
 }
