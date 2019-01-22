@@ -16,6 +16,7 @@ void testRawNumbers();
 void testWhitespace();
 void testAddition();
 void testMultiplication();
+void testExponentiation();
 
 int TestEvaluator::main() {
   Tester tester("Evaluator tests");
@@ -23,6 +24,7 @@ int TestEvaluator::main() {
   tester.test("Test whitespace", testWhitespace);
   tester.test("Test addition", testAddition);
   tester.test("Test multiplication", testMultiplication);
+  tester.test("Test exponentiation", testExponentiation);
   return tester.run();
 }
 
@@ -67,4 +69,12 @@ void testMultiplication() {
   Tester::confirm(evaluatesApproxTo(eval, "8 * 8", 64));
   Tester::confirm(evaluatesApproxTo(eval, "0.85 * 11", 9.35));
   Tester::confirm(evaluatesApproxTo(eval, "0.999 * 1.15", 1.14885));
+}
+
+void testExponentiation() {
+  Evaluator eval { new DefaultContext() };
+  Tester::confirm(evaluatesApproxTo(eval, "1 ^ 99.7", 1.0));
+  Tester::confirm(evaluatesApproxTo(eval, "3.66 ^ 1", 3.66));
+  Tester::confirm(evaluatesApproxTo(eval, "8.75 ^ 0.223", 1.622063290846));
+  Tester::confirm(evaluatesApproxTo(eval, "3 ^ 11", 177147.0));
 }
