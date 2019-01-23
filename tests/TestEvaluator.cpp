@@ -17,6 +17,7 @@ void testWhitespace();
 void testAddition();
 void testMultiplication();
 void testExponentiation();
+void testCombinedOperations();
 
 int TestEvaluator::main() {
   Tester tester("Evaluator tests");
@@ -25,6 +26,7 @@ int TestEvaluator::main() {
   tester.test("Test addition", testAddition);
   tester.test("Test multiplication", testMultiplication);
   tester.test("Test exponentiation", testExponentiation);
+  tester.test("Test combined operations", testCombinedOperations);
   return tester.run();
 }
 
@@ -77,4 +79,12 @@ void testExponentiation() {
   Tester::confirm(evaluatesApproxTo(eval, "3.66 ^ 1", 3.66));
   Tester::confirm(evaluatesApproxTo(eval, "8.75 ^ 0.223", 1.622063290846));
   Tester::confirm(evaluatesApproxTo(eval, "3 ^ 11", 177147.0));
+}
+
+void testCombinedOperations() {
+  Evaluator eval { new DefaultContext() };
+  Tester::confirm(evaluatesApproxTo(eval, "1 * 3 + 5", 8.0));
+  Tester::confirm(evaluatesApproxTo(eval, "1 + 3 * 5", 16.0));
+  Tester::confirm(evaluatesApproxTo(eval, "2.2 ^ 3.3 * 4.4 + 5.5", 64.8536626));
+  Tester::confirm(evaluatesApproxTo(eval, "87.6 + 55.3 * 0.0", 87.6));
 }
