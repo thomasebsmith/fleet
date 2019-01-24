@@ -23,9 +23,9 @@ OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
 EXECCFILES = $(addprefix $(SRCDIR)/,execute.cpp)
 EXECOFILES = $(addprefix $(BUILDDIR)/,execute.o)
 TESTCFILES = $(addprefix $(TESTSDIR)/,TestToken.cpp TestTokenStream.cpp \
-	TestTokenTree.cpp Tester.cpp TestEvaluator.cpp tests.cpp)
+	TestTokenTree.cpp Tester.cpp TestEvaluator.cpp TestContext.cpp tests.cpp)
 TESTOFILES = $(addprefix $(BUILDDIR)/,TestToken.o TestTokenStream.o \
-	TestTokenTree.o Tester.o TestEvaluator.o tests.o)
+	TestTokenTree.o Tester.o TestEvaluator.o TestContext.o tests.o)
 
 # Basic Targets
 .PHONY: default
@@ -108,9 +108,13 @@ TokenTree.hpp)
 
 $(BUILDDIR)/Tester.o: $(TESTSDIR)/Tester.cpp $(TESTSDIR)/Tester.hpp
 
-$(BUILDDIR)/TestEvaluator.o: $(TESTSDIR)/TestEvaluator.cpp \
-$(TESTSDIR)/Tester.hpp $(addprefix $(SRCDIR)/,Context.hpp Evaluator.hpp \
+$(BUILDDIR)/TestEvaluator.o: $(addprefix $(TESTSDIR)/,TestEvaluator.cpp \
+TestEvaluator.hpp Tester.hpp) $(addprefix $(SRCDIR)/,Context.hpp Evaluator.hpp \
 NumberValue.hpp TokenTree.hpp Value.hpp DefaultContext.hpp)
 
+$(BUILDDIR)/TestContext.o: $(addprefix $(TESTSDIR)/,TestContext.cpp \
+TestContext.hpp Tester.hpp) $(addprefix $(SRCDIR)/,Context.hpp NumberValue.hpp \
+Value.hpp)
+
 $(BUILDDIR)/tests.o: $(addprefix $(TESTSDIR)/,tests.cpp TestToken.hpp \
-TestTokenStream.hpp TestTokenTree.hpp)
+TestTokenStream.hpp TestTokenTree.hpp TestContext.hpp)

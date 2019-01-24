@@ -1,4 +1,5 @@
 #include <iostream>
+#include "TestContext.hpp"
 #include "TestEvaluator.hpp"
 #include "TestToken.hpp"
 #include "TestTokenStream.hpp"
@@ -7,7 +8,7 @@
 int main() {
   int result =
     TestToken::main() + TestTokenStream::main() + TestTokenTree::main() +
-    TestEvaluator::main();
+    TestEvaluator::main() + TestContext::main();
   std::cout << "\n\n";
   if (result == 0) {
     std::cout << "All tests PASSED!\n";
