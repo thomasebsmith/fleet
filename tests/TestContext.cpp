@@ -7,11 +7,13 @@
 // Function prototypes
 void testGetValueSimple();
 void testGetNonexistentValue();
+void testGetTwoValues();
 
 int TestContext::main() {
   Tester tester("Context tests");
   tester.test("Simple getValue()", testGetValueSimple);
   tester.test("Get nonexistent value", testGetNonexistentValue);
+  tester.test("Get two values", testGetTwoValues);
   return tester.run();
 }
 
@@ -41,4 +43,21 @@ void testGetNonexistentValue() {
 
   Value::OrError result2 = context.getValue("foo_");
   Tester::confirm(std::holds_alternative<std::runtime_error>(result2));
+}
+
+void testGetTwoValues() {
+  Value::Pointer value { new NumberValue { 0.001 } };
+  Value::Pointer value2 { new NumberValue { 124536.0 } };
+  Context context {
+    Context::ValueMap {
+      { "this_is_a_test", value },
+      { "$", value2 }
+    }
+  };
+  Value::OrError result = context.getValue("this_is_a_test");
+  Tester::confirm(std::holds_alternative<Value::Pointer>(result));
+  Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+  Value::OrError result2 = context.getValue("$");
+  Tester::confirm(std::holds_alternative<Value::Pointer>(result2));
+  Tester::confirm(*std::get_if<Value::Pointer>(&result2) == value2);
 }
