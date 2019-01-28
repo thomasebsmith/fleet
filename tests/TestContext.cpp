@@ -9,6 +9,7 @@ void testGetValueSimple();
 void testGetNonexistentValue();
 void testGetTwoValues();
 void testNestedContext();
+void testNestedContext2();
 
 int TestContext::main() {
   Tester tester("Context tests");
@@ -16,6 +17,7 @@ int TestContext::main() {
   tester.test("Get nonexistent value", testGetNonexistentValue);
   tester.test("Get two values", testGetTwoValues);
   tester.test("Nested contexts", testNestedContext);
+  tester.test("Nested contexts 2", testNestedContext2);
   return tester.run();
 }
 
@@ -73,6 +75,16 @@ void testNestedContext() {
   };
   Context child { parent };
   Value::OrError result = child.getValue("foobar");
+  Tester::confirm(std::holds_alternative<Value::Pointer>(result));
+  Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+}
+
+void testNestedContext2() {
+  Value::Pointer value { new NumberValue { 1.23 } };
+  Context::Pointer parent = new Context {};
+  Context child { parent };
+  child.define("...", value);
+  Value::OrError result = child.getValue("...");
   Tester::confirm(std::holds_alternative<Value::Pointer>(result));
   Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
 }
