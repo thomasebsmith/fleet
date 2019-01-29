@@ -5,11 +5,13 @@
 #include "Value.hpp"
 
 // Function prototypes
+bool valuesEqual(Value::OrError result, Value::Pointer expected);
 void testGetValueSimple();
 void testGetNonexistentValue();
 void testGetTwoValues();
 void testNestedContext();
 void testNestedContext2();
+void testNestedContext3();
 
 int TestContext::main() {
   Tester tester("Context tests");
@@ -18,7 +20,15 @@ int TestContext::main() {
   tester.test("Get two values", testGetTwoValues);
   tester.test("Nested contexts", testNestedContext);
   tester.test("Nested contexts 2", testNestedContext2);
+  tester.test("Nested contexts 3", testNestedContext3);
   return tester.run();
+}
+
+bool valuesEqual(Value::OrError result, Value::Pointer expected) {
+  if (!std::holds_alternative<Value::Pointer>(result)) {
+    return false;
+  }
+  return *std::get_if<Value::Pointer>(&result) == expected;
 }
 
 void testGetValueSimple() {
@@ -87,4 +97,40 @@ void testNestedContext2() {
   Value::OrError result = child.getValue("...");
   Tester::confirm(std::holds_alternative<Value::Pointer>(result));
   Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+}
+
+void testNestedContext3() {
+  Value::Pointer value { new NumberValue { 89.0 } };
+  Value::Pointer value2 { new NumberValue { 0.0 } };
+  Value::Pointer value3 { new NumberValue { 1234567.8910 } };
+  Value::Pointer value4 { new NumberValue { 5555.0 } };
+  Context::Pointer root = new Context {
+    Context::ValueMap {
+      { "root_v1", value },
+      { "root_v2", value2 }
+    }
+  };
+  Context::Pointer layer2 = new Context { root };
+  layer2->define("layer2_v3", value3);
+  Context::Pointer layer3 = new Context { layer2 };
+  layer3->define("layer3_v4", value4);
+
+  Value::OrError result = layer3->getValue("root_v1");
+  Tester::confirm(valuesEqual(result, value));
+  Value::OrError resultAgain = layer2->getValue("root_v1");
+  Tester::confirm(valuesEqual(resultAgain, value));
+  Value::OrError resultThree = root->getValue("root_v1");
+  Tester::confirm(valuesEqual(resultThree, value));
+
+  Value::OrError result2 = layer3->getValue("root_v2");
+  Tester::confirm(valuesEqual(result2, value2));
+  Value::OrError result2Again = layer2->getValue("root_v2");
+  Tester::confirm(valuesEqual(result2Again, value2));
+  Value::OrError result2Three = root->getValue("root_v2");
+  Tester::confirm(valuesEqual(result2Three, value2));
+
+  Tester::confirm(valuesEqual(layer3->getValue("layer2_v3"), value3));
+  Tester::confirm(valuesEqual(layer2->getValue("layer2_v3"), value3));
+
+  Tester::confirm(valuesEqual(layer3->getValue("layer3_v4"), value4));
 }
