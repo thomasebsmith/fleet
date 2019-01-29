@@ -39,8 +39,7 @@ void testGetValueSimple() {
     }
   };
   Value::OrError result = context.getValue("someIdentifier");
-  Tester::confirm(std::holds_alternative<Value::Pointer>(result));
-  Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+  Tester::confirm(valuesEqual(result, value));
 }
 
 void testGetNonexistentValue() {
@@ -69,11 +68,9 @@ void testGetTwoValues() {
     }
   };
   Value::OrError result = context.getValue("this_is_a_test");
-  Tester::confirm(std::holds_alternative<Value::Pointer>(result));
-  Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+  Tester::confirm(valuesEqual(result, value));
   Value::OrError result2 = context.getValue("$");
-  Tester::confirm(std::holds_alternative<Value::Pointer>(result2));
-  Tester::confirm(*std::get_if<Value::Pointer>(&result2) == value2);
+  Tester::confirm(valuesEqual(result2, value2));
 }
 
 void testNestedContext() {
@@ -85,8 +82,7 @@ void testNestedContext() {
   };
   Context child { parent };
   Value::OrError result = child.getValue("foobar");
-  Tester::confirm(std::holds_alternative<Value::Pointer>(result));
-  Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+  Tester::confirm(valuesEqual(result, value));
 }
 
 void testNestedContext2() {
@@ -95,8 +91,7 @@ void testNestedContext2() {
   Context child { parent };
   child.define("...", value);
   Value::OrError result = child.getValue("...");
-  Tester::confirm(std::holds_alternative<Value::Pointer>(result));
-  Tester::confirm(*std::get_if<Value::Pointer>(&result) == value);
+  Tester::confirm(valuesEqual(result, value));
 }
 
 void testNestedContext3() {
@@ -115,19 +110,13 @@ void testNestedContext3() {
   Context::Pointer layer3 = new Context { layer2 };
   layer3->define("layer3_v4", value4);
 
-  Value::OrError result = layer3->getValue("root_v1");
-  Tester::confirm(valuesEqual(result, value));
-  Value::OrError resultAgain = layer2->getValue("root_v1");
-  Tester::confirm(valuesEqual(resultAgain, value));
-  Value::OrError resultThree = root->getValue("root_v1");
-  Tester::confirm(valuesEqual(resultThree, value));
+  Tester::confirm(valuesEqual(layer3->getValue("root_v1"), value));
+  Tester::confirm(valuesEqual(layer2->getValue("root_v1"), value));
+  Tester::confirm(valuesEqual(root->getValue("root_v1"), value));
 
-  Value::OrError result2 = layer3->getValue("root_v2");
-  Tester::confirm(valuesEqual(result2, value2));
-  Value::OrError result2Again = layer2->getValue("root_v2");
-  Tester::confirm(valuesEqual(result2Again, value2));
-  Value::OrError result2Three = root->getValue("root_v2");
-  Tester::confirm(valuesEqual(result2Three, value2));
+  Tester::confirm(valuesEqual(layer3->getValue("root_v2"), value2));
+  Tester::confirm(valuesEqual(layer2->getValue("root_v2"), value2));
+  Tester::confirm(valuesEqual(root->getValue("root_v2"), value2));
 
   Tester::confirm(valuesEqual(layer3->getValue("layer2_v3"), value3));
   Tester::confirm(valuesEqual(layer2->getValue("layer2_v3"), value3));
