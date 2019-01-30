@@ -114,7 +114,7 @@ NumberValue.hpp TokenTree.hpp Value.hpp DefaultContext.hpp)
 
 $(BUILDDIR)/TestContext.o: $(addprefix $(TESTSDIR)/,TestContext.cpp \
 TestContext.hpp Tester.hpp) $(addprefix $(SRCDIR)/,Context.hpp NumberValue.hpp \
-Value.hpp)
+Value.hpp IdentifierValue.hpp Token.hpp)
 
 $(BUILDDIR)/tests.o: $(addprefix $(TESTSDIR)/,tests.cpp TestToken.hpp \
 TestTokenStream.hpp TestTokenTree.hpp TestContext.hpp)

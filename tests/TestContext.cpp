@@ -1,7 +1,11 @@
+#include <memory>
+#include <variant>
 #include "TestContext.hpp"
 #include "Context.hpp"
+#include "IdentifierValue.hpp"
 #include "NumberValue.hpp"
 #include "Tester.hpp"
+#include "Token.hpp"
 #include "Value.hpp"
 
 // Function prototypes
@@ -12,6 +16,7 @@ void testGetTwoValues();
 void testNestedContext();
 void testNestedContext2();
 void testNestedContext3();
+void testIdentifierDefine();
 
 int TestContext::main() {
   Tester tester("Context tests");
@@ -21,6 +26,7 @@ int TestContext::main() {
   tester.test("Nested contexts", testNestedContext);
   tester.test("Nested contexts 2", testNestedContext2);
   tester.test("Nested contexts 3", testNestedContext3);
+  tester.test("Identifier define", testIdentifierDefine);
   return tester.run();
 }
 
@@ -122,4 +128,14 @@ void testNestedContext3() {
   Tester::confirm(valuesEqual(layer2->getValue("layer2_v3"), value3));
 
   Tester::confirm(valuesEqual(layer3->getValue("layer3_v4"), value4));
+}
+
+void testIdentifierDefine() {
+  Context context {};
+  Value::Pointer value { new NumberValue { 3.14159265 } };
+  std::shared_ptr<IdentifierValue> identifier { new IdentifierValue {
+    Token { "xyzabc123", Token::Type::Identifier }
+  } };
+  context.define(identifier, value);
+  Tester::confirm(valuesEqual(context.getValue("xyzabc123"), value));
 }
