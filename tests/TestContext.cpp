@@ -17,6 +17,7 @@ void testNestedContext();
 void testNestedContext2();
 void testNestedContext3();
 void testIdentifierDefine();
+void testIdentifierDefineNested();
 
 int TestContext::main() {
   Tester tester("Context tests");
@@ -27,6 +28,7 @@ int TestContext::main() {
   tester.test("Nested contexts 2", testNestedContext2);
   tester.test("Nested contexts 3", testNestedContext3);
   tester.test("Identifier define", testIdentifierDefine);
+  tester.test("Identifier define nested", testIdentifierDefineNested);
   return tester.run();
 }
 
@@ -138,4 +140,25 @@ void testIdentifierDefine() {
   } };
   context.define(identifier, value);
   Tester::confirm(valuesEqual(context.getValue("xyzabc123"), value));
+}
+
+void testIdentifierDefineNested() {
+  Context::Pointer root = new Context {};
+  Context child { root };
+  Value::Pointer value { new NumberValue { 6.28 } };
+  Value::Pointer value2 { new NumberValue { 0.0000001 } };
+  std::shared_ptr<IdentifierValue> identifier { new IdentifierValue {
+    Token { "blahblah___tau628", Token::Type::Identifier }
+  } };
+  std::shared_ptr<IdentifierValue> identifier2 { new IdentifierValue {
+    Token { "blahblah___notTau", Token::Type::Identifier }
+  } };
+  root->define(identifier, value);
+  child.define(identifier2, value2);
+  Tester::confirm(valuesEqual(root->getValue("blahblah___tau628"), value));
+  Tester::confirm(valuesEqual(child.getValue("blahblah___tau628"), value));
+  Tester::confirm(std::holds_alternative<std::runtime_error>(root->getValue(
+    "blahblah___notTau"
+  )));
+  Tester::confirm(valuesEqual(child.getValue("blahblah___notTau"), value2));
 }
