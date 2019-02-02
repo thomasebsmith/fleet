@@ -19,6 +19,8 @@ void testNestedContext3();
 void testIdentifierDefine();
 void testIdentifierDefineNested();
 
+// This function calls all tests in this program and returns the number of
+//  failed tests.
 int TestContext::main() {
   Tester tester("Context tests");
   tester.test("Simple getValue()", testGetValueSimple);
@@ -32,6 +34,8 @@ int TestContext::main() {
   return tester.run();
 }
 
+// valuesEqual(result, expected) - Returns true iff result holds a
+//  Value::Pointer and that Value::Pointer is equal to expected.
 bool valuesEqual(Value::OrError result, Value::Pointer expected) {
   if (!std::holds_alternative<Value::Pointer>(result)) {
     return false;
@@ -39,6 +43,7 @@ bool valuesEqual(Value::OrError result, Value::Pointer expected) {
   return *std::get_if<Value::Pointer>(&result) == expected;
 }
 
+// This function tests the context.getValue() function in its most basic form.
 void testGetValueSimple() {
   Value::Pointer value { new NumberValue { 3.52 } };
   Context context {
@@ -50,6 +55,8 @@ void testGetValueSimple() {
   Tester::confirm(valuesEqual(result, value));
 }
 
+// This function tests that an error is generated when attempting to get an
+//  identifier that is not in Context.
 void testGetNonexistentValue() {
   Value::Pointer value { new NumberValue { 999.8876 } };
   Value::Pointer value2 { new NumberValue { 0.0 } };
@@ -66,6 +73,7 @@ void testGetNonexistentValue() {
   Tester::confirm(std::holds_alternative<std::runtime_error>(result2));
 }
 
+// This function tests that you can get two values from the same Context.
 void testGetTwoValues() {
   Value::Pointer value { new NumberValue { 0.001 } };
   Value::Pointer value2 { new NumberValue { 124536.0 } };
@@ -81,6 +89,8 @@ void testGetTwoValues() {
   Tester::confirm(valuesEqual(result2, value2));
 }
 
+// This function tests that you can get values from Contexts that are nested in
+//  one another.
 void testNestedContext() {
   Value::Pointer value { new NumberValue { 101.202 } };
   Context::Pointer parent = new Context {
@@ -93,6 +103,8 @@ void testNestedContext() {
   Tester::confirm(valuesEqual(result, value));
 }
 
+// This function tests that you can get values from both a parent and child
+//  Context nested in one another.
 void testNestedContext2() {
   Value::Pointer value { new NumberValue { 1.23 } };
   Context::Pointer parent = new Context {};
@@ -102,6 +114,8 @@ void testNestedContext2() {
   Tester::confirm(valuesEqual(result, value));
 }
 
+// This function tests that you can get values from child Contexts but not from
+//  parent Contexts.
 void testNestedContext3() {
   Value::Pointer value { new NumberValue { 89.0 } };
   Value::Pointer value2 { new NumberValue { 0.0 } };
@@ -132,6 +146,7 @@ void testNestedContext3() {
   Tester::confirm(valuesEqual(layer3->getValue("layer3_v4"), value4));
 }
 
+// This function tests that you can define values using IdentiferValue objects.
 void testIdentifierDefine() {
   Context context {};
   Value::Pointer value { new NumberValue { 3.14159265 } };
@@ -142,6 +157,8 @@ void testIdentifierDefine() {
   Tester::confirm(valuesEqual(context.getValue("xyzabc123"), value));
 }
 
+// This function tests that you can define nested values using IdentifierValue
+//  objects.
 void testIdentifierDefineNested() {
   Context::Pointer root = new Context {};
   Context child { root };
