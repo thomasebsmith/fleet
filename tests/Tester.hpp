@@ -6,7 +6,7 @@
 #include <vector>
 
 #ifndef TESTER_HPP_NOMACRO
-#define confirm(condition) confirmCondition(condition, __LINE__)
+#define confirm(condition) confirmCondition((condition), (__LINE__))
 #endif
 
 class Tester {

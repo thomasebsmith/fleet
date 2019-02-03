@@ -1,3 +1,6 @@
+// File: tests/Tester.cpp
+// Purpose: Source file for Testers, which comprise a set of related tests and
+//  allow for smart assertions within those tests.
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -5,17 +8,28 @@
 #include <vector>
 #include "Tester.hpp"
 
+// constructor(name) - Creates a Tester with 0 initial tests and a given name.
 Tester::Tester(std::string name):
   testsPassed{0}, testsFailed{0}, testerName{name} {}
+
+// getPassed() - Returns the number of passed tests.
 int Tester::getPassed() {
   return testsPassed;
 }
+
+// getFailed() - Returns the number of failed tests.
 int Tester::getFailed() {
   return testsFailed;
 }
+
+// test(name, testFunction) - Adds a test with a given name and a given
+//  execution function.
 void Tester::test(std::string name, void (*testFunction)()) {
   tests.emplace_back(name, testFunction);
 }
+
+// run() - Runs all tests, counting the numbers passed and failed. Outputs the
+//  results to standard output.
 int Tester::run() {
   testsPassed = 0;
   testsFailed = 0;
@@ -43,6 +57,10 @@ int Tester::run() {
   }
   return testsFailed;
 }
+
+// confirmCondition(condition, line) - Asserts that `condition` is true (the
+//  assertion should be on line `line`. Should be used as a macro (see
+//  tests/Tester.hpp).
 void Tester::confirmCondition(bool condition, int line) {
   if (!condition) {
     std::string error = "Assertion failed";
