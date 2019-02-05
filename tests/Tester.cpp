@@ -40,14 +40,17 @@ int Tester::run() {
       testsPassed++;
     }
     catch (std::runtime_error e) {
+      // If there is a runtime error, the test fails.
       testsFailed++;
       std::cout << "FAILED test " + tests.at(i).first + " (" + e.what() + ")\n";
     }
     catch (...) {
+      // If there is any other type of error, the test fails.
       testsFailed++;
       std::cout << "FAILED test " + tests.at(i).first + "\n";
     }
   }
+  // Print a summary with the number of tests passed and failed.
   std::cout << "===\n";
   std::cout << "Overall: Passed " << testsPassed << "/" << testsPassed +
     testsFailed << " tests.\n";
@@ -63,6 +66,8 @@ int Tester::run() {
 //  tests/Tester.hpp).
 void Tester::confirmCondition(bool condition, int line) {
   if (!condition) {
+    // If the condition is false, create an error message with the ilne number
+    //  and the fact that the assertion failed.
     std::string error = "Assertion failed";
     if (line > 0) {
       error += " on line " + std::to_string(line);
