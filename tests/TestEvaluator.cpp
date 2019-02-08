@@ -1,3 +1,6 @@
+// File: tests/TestEvaluator.cpp
+// Purpose: Source file for the TestEvaluator test set.
+
 #include <cmath>
 #include <string>
 #include <variant>
@@ -19,6 +22,7 @@ void testMultiplication();
 void testExponentiation();
 void testCombinedOperations();
 
+// main() - Runs all tests
 int TestEvaluator::main() {
   Tester tester("Evaluator tests");
   tester.test("Test raw numbers", testRawNumbers);
@@ -30,6 +34,9 @@ int TestEvaluator::main() {
   return tester.run();
 }
 
+// evaluatesApproxTo(eval, code, num) - Returns a boolean indicating whether
+//  the string `code`, when evaluated in `eval`, evaluates to a NumberValue
+//  that is very close in precision to `num`.
 bool evaluatesApproxTo(Evaluator &eval, std::string code, double num) {
   const double epsilon = 0.000001;
   const auto result = eval.evaluate(TokenTree::build({ code }));
@@ -44,12 +51,16 @@ bool evaluatesApproxTo(Evaluator &eval, std::string code, double num) {
   return std::abs(evaledNum->getRawNumber() - num) <= epsilon;
 }
 
+// testRawNumbers() - Tests that raw number strings evaluate to their respective
+//  doubles.
 void testRawNumbers() {
   Evaluator eval { new Context() };
   Tester::confirm(evaluatesApproxTo(eval, "2", 2.0));
   Tester::confirm(evaluatesApproxTo(eval, "57.488", 57.488));
 }
 
+// testWhitespace() - Tests whether raw number strings with additional
+//  whitespace evaluate correctly.
 void testWhitespace() {
   Evaluator eval { new Context() };
   Tester::confirm(evaluatesApproxTo(eval, " \t8.8", 8.8));
@@ -57,6 +68,7 @@ void testWhitespace() {
   Tester::confirm(evaluatesApproxTo(eval, "\f87.65\t\t\n  ", 87.65));
 }
 
+// testAddition() - Tests that addition of numbers works as expected.
 void testAddition() {
   Evaluator eval { new DefaultContext() };
   Tester::confirm(evaluatesApproxTo(eval, "1.0 + 2.0", 3.0));
@@ -65,6 +77,8 @@ void testAddition() {
   Tester::confirm(evaluatesApproxTo(eval, "0.0001 +99.7", 99.7001));
 }
 
+// testMultiplication() - Tests that multiplication of numbers works as
+//  expected.
 void testMultiplication() {
   Evaluator eval { new DefaultContext() };
   Tester::confirm(evaluatesApproxTo(eval, "1 * 3.5", 3.5));
@@ -73,6 +87,8 @@ void testMultiplication() {
   Tester::confirm(evaluatesApproxTo(eval, "0.999 * 1.15", 1.14885));
 }
 
+// testExponentiation() - Tests whether exponentiation (raising numbers to
+//  powers) works as expected.
 void testExponentiation() {
   Evaluator eval { new DefaultContext() };
   Tester::confirm(evaluatesApproxTo(eval, "1 ^ 99.7", 1.0));
@@ -81,6 +97,8 @@ void testExponentiation() {
   Tester::confirm(evaluatesApproxTo(eval, "3 ^ 11", 177147.0));
 }
 
+// testCombinedOperations() - Tests whether different operations evaluate
+//  correctly when combined, including whether order of operations is respected.
 void testCombinedOperations() {
   Evaluator eval { new DefaultContext() };
   Tester::confirm(evaluatesApproxTo(eval, "1 * 3 + 5", 8.0));
