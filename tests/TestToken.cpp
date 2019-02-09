@@ -1,3 +1,5 @@
+// File: tests/TestToken.cpp
+// Purpose: Source file for the TestToken test set.
 #include <string>
 #include "Tester.hpp"
 #include "TestToken.hpp"
@@ -13,6 +15,7 @@ void checkEquality();
 void checkGrouper();
 void matchGrouper();
 
+// main() - Runs all Token tests.
 int TestToken::main() {
   Tester tester("Token tests");
   tester.test("Create a token", createToken);
@@ -26,11 +29,16 @@ int TestToken::main() {
   return tester.run();
 }
 
+// createToken() - Tests that Tokens can be created with basic string contents,
+//  including empty strings.
 void createToken() {
   Token myToken { "some normal value", Token::Type::Comment };
   Token anotherToken { "", Token::Type::String };
   Token finalToken { "!@FOO", Token::Type::Number };
 }
+
+// getValue() - Tests that the Token getValue() method correctly returns string
+//  contents of different types of Tokens.
 void getValue() {
   std::string value = "my value";
   std::string value2 = "";
@@ -39,6 +47,9 @@ void getValue() {
   Tester::confirm(value == myToken.getValue());
   Tester::confirm(value2 == anotherToken.getValue());
 }
+
+// setValue() - Tests that the setValue() method works consistently with the
+//  getValue() method.
 void setValue() {
   std::string origValue = "something";
   std::string newValue = "\n";
@@ -46,6 +57,9 @@ void setValue() {
   myToken.setValue(newValue);
   Tester::confirm(newValue == myToken.getValue());
 }
+
+// getType() - Tests that the getType() method correctly returns the type that
+//  the Token was created as.
 void getType() {
   Token::Type type = Token::Type::Identifier;
   Token::Type type2 = Token::Type::LineBreak;
@@ -55,6 +69,9 @@ void getType() {
   Tester::confirm(type == myToken.getType());
   Tester::confirm(type2 == anotherToken.getType());
 }
+
+// setType() - Tests that the setType() method works consistently with the
+//  getType() method.
 void setType() {
   Token::Type origType = Token::Type::Grouper;
   Token::Type newType = Token::Type::String;
@@ -62,6 +79,9 @@ void setType() {
   myToken.setType(newType);
   Tester::confirm(newType == myToken.getType());
 }
+
+// checkEquality() - Checks that the == method correctly checks Token types
+//  and contents for equality.
 void checkEquality() {
   Token t1 { "Foobar", Token::Type::Comment };
   Token t2 { "Foobar", Token::Type::LineBreak };
@@ -79,6 +99,9 @@ void checkEquality() {
   Tester::confirm(t5 == t5);
   Tester::confirm(!(t5 != t5));
 }
+
+// checkGrouper() - Checks that the isOpeningGrouper() method correctly checks
+//  whether a given Grouper Token is "(", "[", or "{".
 void checkGrouper() {
   Token t1 { "]", Token::Type::Grouper };
   Token t2 { "}", Token::Type::Operator };
@@ -95,6 +118,9 @@ void checkGrouper() {
   Tester::confirm(t6.isOpeningGrouper());
   Tester::confirm(t7.isOpeningGrouper());
 }
+
+// matchGrouper() - Checks whether the matchingGropuer() method correctly
+//  finds the closing Grouper for a given opening Grouper.
 void matchGrouper() {
   Token t1 { "(", Token::Type::Grouper };
   Token t2 { "[", Token::Type::Grouper };
