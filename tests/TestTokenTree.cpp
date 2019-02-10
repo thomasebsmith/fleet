@@ -1,3 +1,5 @@
+// File: tests/TestTokenTree.cpp
+// Purpose: Source file for the TestTokenTree test set.
 #include "Tester.hpp"
 #include "TestTokenTree.hpp"
 #include "Token.hpp"
@@ -12,6 +14,8 @@ void oneExpression();
 void basicFunction();
 void operations();
 
+// main() - Runs all TokenTree tests and returns a value indicating the number
+//  of tests failed.
 int TestTokenTree::main() {
   Tester tester { "Token Tree Tests" };
   tester.test("Create with one token", createWithToken);
@@ -23,11 +27,15 @@ int TestTokenTree::main() {
   return tester.run();
 }
 
+// createWithToken() - Tests that a TokenTree can be created with an arbitrary
+//  token as its only component.
 void createWithToken() {
   Token someNumber {"doesn't matter", Token::Type::Number};
   TokenTree myTree { someNumber };
 }
 
+// getOperatorInfo() - Tests that the getPrecedence and getAssociativity static
+//  functions correctly return information for each operator.
 void getOperatorInfo() {
   Tester::confirm(
     TokenTree::getPrecedence("@#$%^&^%$") > TokenTree::getPrecedence("=")
@@ -40,6 +48,8 @@ void getOperatorInfo() {
   );
 }
 
+// emptyTree() - Tests that empty TokenTrees can be created (including
+//  TokenTrees with only whitespace and comments).
 void emptyTree() {
   TokenStream empty { "" };
   TokenTree tree = TokenTree::build(empty);
@@ -51,6 +61,8 @@ void emptyTree() {
   Tester::confirm(notQuiteEmptyLines && notQuiteEmptyLines->size() == 0);
 }
 
+// oneExpression() - Tests that a TokenTree can be created correctly with a
+//  single expression.
 void oneExpression() {
   TokenStream oneToken { " f " };
   const auto &oneTokenLines = TokenTree::build(oneToken).getLineList();
@@ -60,6 +72,8 @@ void oneExpression() {
     *endpoint == (Token {"f", Token::Type::Identifier}));
 }
 
+// basicFunction() - Tests that basic function calls evaluate correctly,
+//  including with string, identifer, and numeric components.
 void basicFunction() {
   TokenStream func { "G foo" };
   const auto &funcLines = TokenTree::build(func).getLineList();
@@ -89,6 +103,8 @@ void basicFunction() {
     *argName2 == (Token {"\"foobar(3 \"", Token::Type::String}));
 }
 
+// operations() - Tests that TokenTrees can be correctly created with operators
+//  of various precedence.
 void operations() {
   TokenStream operations { "1.3*5-7/3" };
   const auto &opLines = TokenTree::build(operations);
