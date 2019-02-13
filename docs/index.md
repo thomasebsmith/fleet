@@ -45,6 +45,8 @@ syntax tree builder are implemented (with accompanying tests).
   ```
   depending on what target was built.
 
+Note: You can run `make --debug` to build Fleet with debugging hooks enabled.
+
 ## About the Language
 Fleet's philosophy is one of simplicity: its grammar is extremely simple, with
 no keywords or special cases. The language implements as little built-in
@@ -72,3 +74,5 @@ ignored.
 
 Groupings have the highest precedence, followed by function pairs and then
 by operations, which vary in precedence.
+
+
