@@ -21,6 +21,7 @@ void testAddition();
 void testMultiplication();
 void testExponentiation();
 void testCombinedOperations();
+void testCombinedParens();
 
 // main() - Runs all tests
 int TestEvaluator::main() {
@@ -31,6 +32,7 @@ int TestEvaluator::main() {
   tester.test("Test multiplication", testMultiplication);
   tester.test("Test exponentiation", testExponentiation);
   tester.test("Test combined operations", testCombinedOperations);
+  tester.test("Test operations and parentheses", testCombinedParens);
   return tester.run();
 }
 
@@ -105,4 +107,16 @@ void testCombinedOperations() {
   Tester::confirm(evaluatesApproxTo(eval, "1 + 3 * 5", 16.0));
   Tester::confirm(evaluatesApproxTo(eval, "2.2 ^ 3.3 * 4.4 + 5.5", 64.8536626));
   Tester::confirm(evaluatesApproxTo(eval, "87.6 + 55.3 * 0.0", 87.6));
+}
+
+// testCombinedParens() - Tests whether different operations and groupings
+//  evaluate correctly when combined.
+void testCombinedParens() {
+  Evaluator eval { new DefaultContext() };
+  Tester::confirm(evaluatesApproxTo(eval, "3.1 ^ (1.1^(2*3)) + 4*(3+2)",
+    27.42125259322668));
+  Tester::confirm(evaluatesApproxTo(eval, "((((((5.9999))))))", 5.9999));
+  Tester::confirm(evaluatesApproxTo(eval, "3+((5*7)+3)^2.2^   0.0", 41.0));
+  Tester::confirm(evaluatesApproxTo(eval, "1^1^1^2^3*(5+1.1)^(2^0.01)",
+    6.1772081531526535));
 }
