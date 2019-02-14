@@ -45,7 +45,8 @@ syntax tree builder are implemented (with accompanying tests).
   ```
   depending on what target was built.
 
-Note: You can run `make --debug` to build Fleet with debugging hooks enabled.
+Note: You can run `make debug` or `make debugtests` to build Fleet with
+debugging hooks enabled.
 
 ## About the Language
 Fleet's philosophy is one of simplicity: its grammar is extremely simple, with
