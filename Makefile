@@ -16,10 +16,11 @@ SRCEXT = cpp
 
 CFILES = $(addprefix $(SRCDIR)/,ParseError.cpp Token.cpp TokenStream.cpp \
 	TokenTree.cpp Context.cpp TypeError.cpp NumberValue.cpp Evaluator.cpp \
-	DefaultContext.cpp IdentifierValue.cpp Value.cpp MaybeSharedPtr.cpp)
+	DefaultContext.cpp IdentifierValue.cpp Value.cpp MaybeSharedPtr.cpp \
+	Type.cpp)
 OFILES = $(addprefix $(BUILDDIR)/,ParseError.o Token.o TokenStream.o \
 	TokenTree.o Context.o TypeError.o NumberValue.o Evaluator.o \
-	DefaultContext.o IdentifierValue.o Value.o)
+	DefaultContext.o IdentifierValue.o Value.o MaybeSharedPtr.o Type.o)
 EXECCFILES = $(addprefix $(SRCDIR)/,execute.cpp)
 EXECOFILES = $(addprefix $(BUILDDIR)/,execute.o)
 TESTCFILES = $(addprefix $(TESTSDIR)/,TestToken.cpp TestTokenStream.cpp \
@@ -91,6 +92,8 @@ TokenTree.cpp Value.hpp)
 
 $(BUILDDIR)/Value.o: $(addprefix $(SRCDIR)/,Value.cpp Value.hpp TokenTree.hpp \
 Evaluator.hpp)
+
+$(BUILDDIR)/Type.o: $(addprefix $(SRCDIR)/,Type.cpp Type.hpp Value.hpp)
 
 $(BUILDDIR)/execute.o: $(addprefix $(SRCDIR)/,execute.cpp TokenStream.hpp \
 TokenTree.hpp Evaluator.hpp DefaultContext.hpp)
