@@ -54,6 +54,11 @@ no keywords or special cases. The language implements as little built-in
 functionality as possible, relying on the standard library. The standard
 library attempts to be consistent and universal.
 
+Fleet is statically typed, but it offers type inference. This allows you to
+produce clean code without sacrificing type safety. Fleet will also have modern
+features like optionals, generics, and implementations of basic data structures
+available in its standard library.
+
 ##### Grammar
 ```
 comment: /#.*?\n/
