@@ -59,6 +59,11 @@ produce clean code without sacrificing type safety. Fleet will also have modern
 features like optionals, generics, and implementations of basic data structures
 available in its standard library.
 
+Fleet is based on a number of programming languages, including Haskell, Swift,
+C++, and many more. Fleet as a language is suitable for virtually any
+programming task. However, its current implementation is only available where
+C++ can be compiled.
+
 ##### Grammar
 ```
 comment: /#.*?\n/
@@ -80,5 +85,3 @@ ignored.
 
 Groupings have the highest precedence, followed by function pairs and then
 by operations, which vary in precedence.
-
-
