@@ -41,6 +41,18 @@ public:
   static const std::string name;
   static std::string getClassName();
   std::string getName() const;
+
+  // fromStatic<T>() - Returns a Type that conforms to the C++ type T. T should
+  //  be a subclass of Value.
+  template <typename T>
+  static Type fromStatic() {
+    return Type {
+      T::name,
+      [] (Value::Pointer val) -> bool {
+        return val->canCastValue<T>();
+      }
+    };
+  }
 };
 
 #endif
