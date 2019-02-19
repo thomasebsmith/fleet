@@ -1,8 +1,7 @@
 # Fleet
 #### Documentation
 
-## Overview
-Fleet is a simple, functional programming language.
+## Overview Fleet is a simple, functional programming language.
 This project includes an interpreter written in C++.
 
 Fleet (as a language) could also be compiled, but no compiler currently exists.
@@ -14,7 +13,7 @@ syntax tree builder are implemented (with accompanying tests).
 ## Building the Project
 ##### You need:
  * `git`
- * `g++` with C++17 support
+ * `g++` or `clang` with C++17 support
  * `make`
  * A Unix-compatible shell
 
@@ -63,6 +62,15 @@ Fleet is based on a number of programming languages, including Haskell, Swift,
 C++, and many more. Fleet as a language is suitable for virtually any
 programming task. However, its current implementation is only available where
 C++ can be compiled.
+
+##### Core Types
+Numbers, characters, and functions are built into Fleet itself. These three
+types form the basis of every other type. In the standard library, strings
+are created as lists of characters.
+
+No function in Fleet should throw an error unless that error is a type mismatch
+or a parse error. Instead, functions that only possibly return a valid value
+should return an optional - a value that may or may not contain another value.
 
 ##### Grammar
 ```
