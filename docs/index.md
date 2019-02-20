@@ -93,3 +93,18 @@ ignored.
 
 Groupings have the highest precedence, followed by function pairs and then
 by operations, which vary in precedence.
+
+##### Standard Library
+Fleet's standard library will contain many functions and types that can be
+used in your code. Only a small portion of the standard library is included
+in your code be default (this portion is called the prelude).
+
+To include part of the standard library in your code, use this syntax:
+```
+Module = import "Module"
+```
+
+To prevent the program from including the prelude, use this syntax:
+```
+#[directive no_prelude]
+```
