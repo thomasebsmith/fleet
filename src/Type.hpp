@@ -37,6 +37,19 @@ public:
   // contains(value) - Returns true iff value is an instance of this Type.
   bool contains(Value::Pointer value) const;
 
+  template <typename T, typename U>
+  std::optional<T> visit(std::function<T(const U&)> visitor, const
+    Value::Pointer &value) {
+    if (!contains(value)) {
+      return {};
+    }
+    const auto cast = value->castValue<U>();
+    if (cast) {
+      return { visitor(*cast) };
+    }
+    return {};
+  }
+
   // name/getName() - Returns "Type".
   static const std::string name;
   static std::string getClassName();
