@@ -108,3 +108,21 @@ To prevent the program from including the prelude, use this syntax:
 ```
 #[directive no_prelude]
 ```
+
+To include a custom module in your code, use this syntax:
+```
+Module = import "./path/to/Module"
+```
+
+To import a module into the current scope (i.e. so you can use `<name>`
+instead of `Module.<name>`), use this syntax:
+```
+scope (import "Module")
+```
+
+Here is an incomplete list of standard library modules:
+ - Prelude (Either, IO, List, Optional, and String types)
+ - Algorithms (High-performance implementations of common algorithms)
+ - Net (Network IO)
+ - Parse (JSON and XML parsers)
+ - Regex (Regular expression type)
