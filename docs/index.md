@@ -126,3 +126,14 @@ Here is an incomplete list of standard library modules:
  - Net (Network IO)
  - Parse (JSON and XML parsers)
  - Regex (Regular expression type)
+
+##### Directives
+Directives allow you to give instructions to the compiler or interpreter
+directly. They are formed using the syntax `#[directive directive_name]` or
+`#[directive directive_name directive_value]`. The former syntax is equivalent
+to `#[directive directive_name true]`.
+
+Here are some commonly used directives:
+ - `no_prelude` - If true, prevents Fleet from including the prelude.
+ - `no_import` - If true, disables all imports (except the prelude).
+ - `require_version` - Requires the given version string for Fleet's version.
