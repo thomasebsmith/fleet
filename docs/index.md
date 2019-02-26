@@ -137,3 +137,20 @@ Here are some commonly used directives:
  - `no_prelude` - If true, prevents Fleet from including the prelude.
  - `no_import` - If true, disables all imports (except the prelude).
  - `require_version` - Requires the given version string for Fleet's version.
+
+##### Type Annotations
+Although Fleet is statically typed, type annotations are usually optional. In
+most cases, the compiler or interpreter can deduce the types you are using.
+However, in some cases, there are multiple versions of a function that return
+different types, in which case you must use type annotations. Type annotations
+can also make your code more readable.
+
+Type annotations can be written like so:
+```
+variable :: Type = value
+```
+
+They can also be written in function declarations:
+```
+function = (parameter :: Type) -> expression
+```
