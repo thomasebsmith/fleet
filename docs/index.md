@@ -154,3 +154,18 @@ They can also be written in function declarations:
 ```
 function = (parameter :: Type) -> expression
 ```
+
+You can also write annotations for types that are composed of other types:
+```
+variable :: MetaType Type = value
+```
+
+For functions, this looks like
+```
+function :: Type -> Type = parameter -> expression
+```
+
+Generic type parameters are also available in functions:
+```
+function = (parameter :: generic T) -> (otherParameter :: T) -> expression
+```
