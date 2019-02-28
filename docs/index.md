@@ -169,3 +169,9 @@ Generic type parameters are also available in functions:
 ```
 function = (parameter :: generic T) -> (otherParameter :: T) -> expression
 ```
+
+You can use multiple generic type parameters with one function:
+```
+function = (parameter :: generic T) -> (otherParameter :: generic U) ->
+  expression
+```
