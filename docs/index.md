@@ -121,10 +121,13 @@ scope (import "Module")
 ```
 
 Here is an incomplete list of standard library modules:
- - Prelude (Either, IO, List, Optional, and String types)
+ - Prelude (Either, IO, List, Optional, and String types; basic operators)
  - Algorithms (High-performance implementations of common algorithms)
+ - DateTime (DateTime type and related functions)
+ - Math (Fraction, Complex, and Integer types; more math functions)
  - Net (Network IO)
  - Parse (JSON and XML parsers)
+ - Random (random number IO)
  - Regex (Regular expression type)
 
 ##### Directives
