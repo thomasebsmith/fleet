@@ -137,8 +137,12 @@ directly. They are formed using the syntax `#[directive directive_name]` or
 to `#[directive directive_name true]`.
 
 Here are some commonly used directives:
- - `no_prelude` - If true, prevents Fleet from including the prelude.
+ - `deprecated` - Indicates a variable as deprecated.
  - `no_import` - If true, disables all imports (except the prelude).
+ - `no_prelude` - If true, prevents Fleet from including the prelude.
+ - `no_optimize` - If true, disables most optimizations of the interpreter or
+    compiler.
+ - `poison` - Invalidates a given identifier or syntactic construct.
  - `require_version` - Requires the given version string for Fleet's version.
 
 ##### Type Annotations
