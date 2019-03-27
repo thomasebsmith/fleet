@@ -28,11 +28,11 @@ syntax tree builder are implemented (with accompanying tests).
   ```
  3. Build the appropriate target:
   ```
-  make tests
-  ```
-  or simply
-  ```
   make
+  ```
+  or
+  ```
+  make tests
   ```
  4. Run the resulting executable:
   ```
@@ -66,10 +66,11 @@ C++ can be compiled.
 ##### Core Types
 Numbers, characters, and functions are built into Fleet itself. These three
 types form the basis of every other type. In the standard library, strings
-are created as lists of characters.
+are created as lists of characters. Note that characters are defined by Unicode
+code points rather than UTF-8 or ASCII bytes.
 
 No function in Fleet should throw an error unless that error is a type mismatch
-or a parse error. Instead, functions that only possibly return a valid value
+or a parse error. Instead, functions that only sometimes return a valid value
 should return an optional - a value that may or may not contain another value.
 
 ##### Grammar
@@ -129,6 +130,8 @@ Here is an incomplete list of standard library modules:
  - Parse (JSON and XML parsers)
  - Random (random number IO)
  - Regex (Regular expression type)
+ - Structures (Implementations of less common data structures like graphs,
+   filters, and trees)
 
 ##### Directives
 Directives allow you to give instructions to the compiler or interpreter
