@@ -162,7 +162,7 @@ variable :: Type = value
 
 They can also be written in function declarations:
 ```
-function = (parameter :: Type) -> expression
+function = parameter :: Type -> expression
 ```
 
 You can also write annotations for types that are composed of other types:
@@ -172,16 +172,23 @@ variable :: MetaType Type = value
 
 For functions, this looks like
 ```
-function :: Type -> Type = parameter -> expression
+function :: Type => Type = parameter :: Type -> expression
 ```
 
 Generic type parameters are also available in functions:
 ```
-function = (parameter :: generic T) -> (otherParameter :: T) -> expression
+function = (parameter :: Any) -> (otherParameter :: concrete parameter) ->
+  expression
 ```
 
 You can use multiple generic type parameters with one function:
 ```
-function = (parameter :: generic T) -> (otherParameter :: generic U) ->
+function = (parameter :: Any) -> (otherParameter :: Any) ->
   expression
+```
+
+Types are first-class objects, so you can create types composed of other types:
+```
+TypeAOrTypeB = TypeA | TypeB
+TypeAAndTypeB = TypeA & TypeB
 ```
