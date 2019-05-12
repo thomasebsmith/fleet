@@ -177,18 +177,33 @@ function :: Type => Type = parameter :: Type -> expression
 
 Generic type parameters are also available in functions:
 ```
-function = (parameter :: Any) -> (otherParameter :: concrete parameter) ->
+function = parameter :: Any -> otherParameter :: concrete parameter ->
   expression
 ```
 
 You can use multiple generic type parameters with one function:
 ```
-function = (parameter :: Any) -> (otherParameter :: Any) ->
-  expression
+function = parameter :: Any -> otherParameter :: Any -> expression
 ```
 
 Types are first-class objects, so you can create types composed of other types:
 ```
 TypeAOrTypeB = TypeA | TypeB
 TypeAAndTypeB = TypeA & TypeB
+```
+
+You can also create types based on constraints:
+```
+HasFooFunction = providing (T :: Type -> Foo :: T => T)
+```
+
+The `new_type` expression provides a way to capture its lexical context,
+including parameters passed to enclosing functions:
+```
+Constructor = x :: Integer -> y :: Integer -> new_type
+one = Constructor 1 1
+two = Constructor 2 2
+
+one :: Constructor 1 1 # OK
+two :: Constructor 1 2 # Produces an error
 ```
