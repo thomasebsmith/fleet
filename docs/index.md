@@ -123,13 +123,22 @@ scope (import "Module")
 
 Here is an incomplete list of standard library modules:
  - Prelude (Either, IO, List, Optional, and String types; basic operators)
+   - Automatically imported into every program, but can be excluded using the
+     `no_prelude` directive (see below)
  - Algorithms (High-performance implementations of common algorithms)
  - DateTime (DateTime type and related functions)
+   - Uses OS's time API to determine local current time
+   - Allows actions to take place after a timeout
+   - Allows accurate measurement of time intervals
  - Math (Fraction, Complex, and Integer types; more math functions)
  - Net (Network IO)
+   - Provides APIs for UDP, TCP, HTTP, and HTTPS communication
+   - Provides an easy-to-use HTTP server setup API
+   - Provides an easy-to-use HTTP fetch API
  - Parse (JSON and XML parsers)
- - Random (random number IO)
+ - Random (Random number IO)
  - Regex (Regular expression type)
+   - Uses regular expression syntax similar to JavaScript's
  - Structures (Implementations of less common data structures like graphs,
    filters, and trees)
 
