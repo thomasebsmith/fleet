@@ -95,6 +95,32 @@ ignored.
 Groupings have the highest precedence, followed by function pairs and then
 by operations, which vary in precedence.
 
+##### Prelude
+Here is an incomplete list of prelude variables:
+ - `import`
+ - `providing`
+ - `scope`
+ - `Any`
+ - `Char`
+ - `Float` (includes `Float32`, `Float64`, and `Float128`)
+ - `Int` (includes `Byte`, `Int16`, `Int32`, `Int64`, and `Int128`)
+ - `List`
+ - `Num` (includes `Float` and `Int`)
+ - `String` (an alias for `List Char`)
+ - `=`
+ - `+`
+ - `-`
+ - `*`
+ - `/`
+ - `^`
+ - `&`
+ - `|`
+ - `::`
+ - `[]`
+ - `,`
+ - `->`
+ - `=>`
+
 ##### Standard Library
 Fleet's standard library will contain many functions and types that can be
 used in your code. Only a small portion of the standard library is included
@@ -120,11 +146,15 @@ instead of `Module.<name>`), use this syntax:
 ```
 scope (import "Module")
 ```
+Note that the default prelude inclusion is equivalent to
+```
+scope (import "Prelude")
+```
 
 Here is an incomplete list of standard library modules:
  - Prelude (Either, IO, List, Optional, and String types; basic operators)
    - Automatically imported into every program, but can be excluded using the
-     `no_prelude` directive (see below)
+     `no_prelude` directive (see above)
  - Algorithms (High-performance implementations of common algorithms)
  - DateTime (DateTime type and related functions)
    - Uses OS's time API to determine local current time
