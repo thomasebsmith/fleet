@@ -1,7 +1,7 @@
-# Fleet
-#### Documentation
+# Fleet Documentation
 
-## Overview Fleet is a simple, functional programming language.
+## Overview
+Fleet is a simple, functional programming language.
 This project includes an interpreter written in C++.
 
 Fleet (as a language) could also be compiled, but no compiler currently exists.
