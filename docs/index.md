@@ -63,6 +63,14 @@ C++, and many more. Fleet as a language is suitable for virtually any
 programming task. However, its current implementation is only available where
 C++ can be compiled.
 
+##### Goals
+Fleet has been designed with five main goals in mind:
+ 1. Syntactic simplicity.
+ 2. Types as arbitrary analysis-time constraints.
+ 3. Types as first-class values.
+ 4. No runtime errors.
+ 5. High performance.
+
 ##### Core Types
 Numbers, characters, and functions are built into Fleet itself. These three
 types form the basis of every other type. In the standard library, strings
