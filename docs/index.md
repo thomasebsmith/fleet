@@ -64,12 +64,13 @@ programming task. However, its current implementation is only available where
 C++ can be compiled.
 
 ##### Goals
-Fleet has been designed with five main goals in mind:
+Fleet has been designed with six main goals in mind:
  1. Syntactic simplicity.
  2. Types as arbitrary analysis-time constraints.
  3. Types as first-class values.
- 4. No runtime errors.
- 5. High performance.
+ 4. Inferred static typing.
+ 5. No runtime errors.
+ 6. High performance.
 
 ##### Core Types
 Numbers, characters, and functions are built into Fleet itself. These three
