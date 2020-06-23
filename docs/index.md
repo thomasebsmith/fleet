@@ -116,6 +116,7 @@ Here is an incomplete list of prelude variables:
  - `List`
  - `Num` (includes `Float` and `Int`)
  - `String` (an alias for `List Char`)
+ - `Maybe T` (includes `Nothing` and `Some T`)
  - `=`
  - `+`
  - `-`
