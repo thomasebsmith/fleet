@@ -255,4 +255,7 @@ two = Constructor 2 2
 
 one :: Constructor 1 1 # OK
 two :: Constructor 1 2 # Produces an error
+
+Constructor 1 some_y = one # OK: some_y is now 1
+Constructor 1 some_y = two # Produces an error
 ```
