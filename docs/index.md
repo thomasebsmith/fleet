@@ -19,27 +19,27 @@ syntax tree builder are implemented (with accompanying tests).
 
 ##### Instructions:
  1. Clone the project:
-  ```
+  ```sh
   git clone https://github.com/thomasebsmith/fleet.git
   ```
  2. Navigate to the new folder:
-  ```
+  ```sh
   cd fleet
   ```
  3. Build the appropriate target:
-  ```
+  ```sh
   make
   ```
   or
-  ```
+  ```sh
   make tests
   ```
  4. Run the resulting executable:
-  ```
+  ```sh
   ./build/fleet
   ```
   or
-  ```
+  ```sh
   ./build/testFleet
   ```
   depending on what target was built.
