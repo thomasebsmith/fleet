@@ -15,27 +15,27 @@ This project includes an interpreter written in C++.
 
 ##### Instructions:
  1. Clone the project:
-  ```
+  ```sh
   git clone https://github.com/thomasebsmith/fleet.git
   ```
  2. Navigate to the new folder:
-  ```
+  ```sh
   cd fleet
   ```
  3. Build the appropriate target:
-  ```
+  ```sh
   make tests
   ```
   or simply
-  ```
+  ```sh
   make
   ```
  4. Run the resulting executable:
-  ```
+  ```sh
   ./build/fleet
   ```
   or
-  ```
+  ```sh
   ./build/testFleet
   ```
   depending on what target was built.
