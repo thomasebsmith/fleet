@@ -107,6 +107,7 @@ by operations, which vary in precedence.
 ##### Prelude
 Here is an incomplete list of prelude variables:
  - `import`
+ - `Module`
  - `providing`
  - `scope`
  - `Any`
@@ -130,6 +131,7 @@ Here is an incomplete list of prelude variables:
  - `,`
  - `->`
  - `=>`
+ - `.`
 
 ##### Standard Library
 Fleet's standard library will contain many functions and types that can be
