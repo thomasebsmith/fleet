@@ -4,7 +4,8 @@
 Fleet is a simple, functional programming language designed to work for any
 task.
 
-This project includes an interpreter written in C++.
+This project includes an interpreter written in C++, although the interpreter
+is still in progress.
 
 ## Building the Project
 ##### You need:
