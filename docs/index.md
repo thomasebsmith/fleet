@@ -248,10 +248,10 @@ You can also create types based on constraints:
 HasFooFunction = providing (T :: Type -> Foo :: T => T)
 ```
 
-The `new_type` expression provides a way to capture its lexical context,
-including parameters passed to enclosing functions:
+The `new` expression provides a way to capture its lexical context,
+including parameters passed to lexically enclosing functions:
 ```
-Constructor = x :: Integer -> y :: Integer -> new_type
+Constructor = x :: Integer -> y :: Integer -> new
 one = Constructor 1 1
 two = Constructor 2 2
 
