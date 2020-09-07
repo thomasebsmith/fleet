@@ -2,9 +2,9 @@
 
 ## Fizzbuzz
 ```fleet
-fizzbuzz = n -> if (n % 3 == 0 && n % 5 == 0) then "FizzBuzz" else
-               (if (n % 3 == 0) then "Fizz" else
-               (if (n % 5 == 0) then "Buzz" else (n |> toString)))
+fizzbuzz = n -> if (n % 3 == 0 && n % 5 == 0) then "FizzBuzz" else (
+                if (n % 3 == 0) then "Fizz" else (
+                if (n % 5 == 0) then "Buzz" else (n |> toString)))
 
 main = 1 ..<= 100 |> map fizzbuzz |> join '\n' |> print
 ```
