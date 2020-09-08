@@ -28,3 +28,20 @@ solve = n -> {
 
 solution = solve 600851475143
 ```
+
+## Problem 4
+```fleet
+scope (import "Sequence")
+
+isPalindrome = [] -> True
+isPalindrome = [el] -> True
+isPalindrome = seq -> {
+  (last, seq) = splice seq (lastIndex seq)
+  first : seq = seq
+  first == last && isPalindrome seq
+}
+
+threeDigitProducts = (*) <$> (0 ..< 1000) <*> (0 ..< 1000)
+
+solution = threeDigitProducts |> filter (toString |. isPalindrome) |> tryLast
+```
