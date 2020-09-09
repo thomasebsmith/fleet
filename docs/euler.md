@@ -45,3 +45,19 @@ threeDigitProducts = (*) <$> (0 ..< 1000) <*> (0 ..< 1000)
 
 solution = threeDigitProducts |> filter (toString |. isPalindrome) |> tryLast
 ```
+
+## Problem 5
+```fleet
+scope (import "Integer")
+solution = 1 ..<= 20 |> reduceLeft lcm
+```
+
+## Problem 6
+```fleet
+scope (import "Tuple")
+
+firstSum = 1 ..<= 10 |> map (** 2) |> reduceLeft (+)
+secondSum = 1 ..<= 10 |> reduceLeft (+) |> (** 2)
+
+solution = secondSum - firstSum
+```
