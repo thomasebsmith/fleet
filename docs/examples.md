@@ -18,3 +18,16 @@ lengthOfLastWord = splitWith string.isWhitespace |.
                    lastOr "" |.
                    length
 ```
+
+## Palindrome check
+```fleet
+scope (import "Sequence")
+
+isPalindrome = [] -> True
+isPalindrome = [el] -> True
+isPalindrome = seq -> {
+  (last, seq) = splice seq (lastIndex seq)
+  first : seq = seq
+  first == last && isPalindrome seq
+}
+```
