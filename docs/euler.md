@@ -108,3 +108,22 @@ largestProduct = _ -> bestSoFar -> bestSoFar
 digits = number |> tryMap (tryParseAs Int)
 solution = largestProduct digits 0
 ```
+
+## Problem 9
+```fleet
+isSolution = (a, b) -> (1000 - a - b) ** 2 == a ** 2 + b ** 2
+makeSolution = (a, b) -> (a, b, 1000 - a - b)
+
+solution = zip (1 ..<= 500) (1 ..<= 500) |> filter isSolution |> makeSolution
+```
+
+## Problem 10
+```fleet
+primes = [] -> []
+primes = (n : rest) -> {
+  futurePrimes = rest |> filter (not . divisibleBy startingAt)) |> primes
+  n : futurePrimes
+}
+
+solution = primes (2 ..< 2000000) |> sum
+```
