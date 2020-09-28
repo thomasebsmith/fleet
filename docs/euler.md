@@ -178,3 +178,16 @@ solution = if (height > 0) then {
   diagonals |> map getProduct |> max
 } else 0
 ```
+
+## Problem 12
+```fleet
+triangles = n -> prev -> {
+  (n + prev) : triangles (n + 1) (n + prev)
+}
+
+divides = x -> y -> x % y == 0
+numDivisors = n -> 2 ..< (n // 2) |> filter (divides n) |> length
+
+solution = triangles 1 0 |> map (n -> (n, n |> divisors |> length)) |>
+  filter ((_, numDivisors) -> numDivisors > 500) |> first |> fst
+```
