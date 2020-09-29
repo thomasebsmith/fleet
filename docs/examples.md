@@ -31,3 +31,12 @@ isPalindrome = seq -> {
   first == last && isPalindrome seq
 }
 ```
+
+## Numbers of lines in a file
+```fleet
+files = import "files"
+
+filePath = files.homePath / "read-me.txt"
+
+main = files.lines filePath |> map length
+```
