@@ -40,3 +40,12 @@ filePath = files.homePath / "read-me.txt"
 
 main = files.lines filePath |> map length
 ```
+
+## Syntactic sugar for functions
+```fleet
+# This syntax:
+function_1 = x -> x + 1
+
+# Is equivalent to this sugar:
+function_1 x = x + 1
+```
