@@ -49,3 +49,11 @@ function_1 = x -> x + 1
 # Is equivalent to this sugar:
 function_1 x = x + 1
 ```
+
+## Multi-line comments
+```fleet
+#{
+  This syntax indicates a multi-line comment.
+  Multi-line comments can be nested: #{ Also multi-line. }
+}
+```
