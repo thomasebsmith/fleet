@@ -84,7 +84,9 @@ should return an optional - a value that may or may not contain another value.
 
 ##### Grammar
 ```
-comment: /#.*?\n/
+multi-line comment: /#{/ (/.*/ multi-line comment /.*/)* /}#/
+single-line-comment: /#.*?\n/
+comment: single-line comment | multi-line comment
 grouper: /[()[\]{}]/
 identifier: /[a-zA-Z_][a-zA-Z_0-9]*/
 linebreak: \n when the last token was not an operator
