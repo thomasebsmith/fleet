@@ -183,8 +183,9 @@ Here is an incomplete list of standard library modules:
  - Random (Random number IO)
  - Regex (Regular expression type)
    - Uses regular expression syntax similar to JavaScript's
- - Structures (Implementations of less common data structures like graphs,
-   filters, and trees)
+ - Structures (Implementations of less common data structures)
+   - Data structures include graphs, filters, trees, queues, priority queues,
+     matrices, and stacks.
 
 ##### Directives
 Directives allow you to give instructions to the compiler or interpreter
