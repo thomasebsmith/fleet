@@ -16,3 +16,18 @@ divisibleByThree  2 == False
 divisibleByThree -1 == False
 divisibleByThree 12 == True
 ```
+
+## `(+) :: Num => Num => Num`
+The addition operator, `+`, returns the sum of `first_number` and
+`second_number`.
+
+### Usage
+`sum :: Num = (first_number :: Num) + (second_number :: Num)`
+
+### Examples
+```fleet
+generate_fibonacci = x :: Int -> y :: Int -> (x + y) :
+  generate_fibonacci y (x + y)
+
+fibonacci_sequence = generate_fibonacci 0 1
+```
