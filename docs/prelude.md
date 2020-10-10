@@ -31,3 +31,15 @@ generate_fibonacci = x :: Int -> y :: Int -> (x + y) :
 
 fibonacci_sequence = generate_fibonacci 0 1
 ```
+
+## `(-) :: Num => Num => Num`
+The subtraction operator, `-`, returns the difference of `first_number` and
+`second_number`.
+
+### Usage
+`difference :: Num = (first_number :: Num) - (second_number :: Num)`
+
+### Notes
+This should not be confused with negative numeric literals (e.g. `-1.3`).
+When a `-` immediately precedes a numeric literal, it is *not* interpreted
+as subtraction.
