@@ -43,3 +43,20 @@ The subtraction operator, `-`, returns the difference of `first_number` and
 This should not be confused with negative numeric literals (e.g. `-1.3`).
 When a `-` immediately precedes a numeric literal, it is *not* interpreted
 as subtraction.
+
+## `(*) :: Num => Num => Num`
+The multiplication operator, `*`, returns the product of `first_number` and
+`second_number`.
+
+### Usage
+`product :: Num = (first_number :: Num) * (second_number :: Num)`
+
+### Examples
+```fleet
+factorial = 0 -> 1
+factorial = n -> n * factorial (n - 1)
+
+factorial 5 == 120
+factorial 1 == 1
+factorial 3 == 6
+```
