@@ -60,3 +60,20 @@ factorial 5 == 120
 factorial 1 == 1
 factorial 3 == 6
 ```
+
+## `(/) :: Num => Num (/= 0) => Num`
+The multiplication operator, `/`, returns the quotient of `dividend` and
+`divisor`.
+
+### Usage
+`quotient :: Num = (dividend :: Num) * (divisor :: Num)`
+
+### Examples
+```fleet
+divisionSequence = divisor -> n -> n : (divisionSequence divisor (n / divisor))
+halves = divisionSequence 2 1
+
+halves |> take   10 |> sum |> (< 2)
+halves |> take   20 |> sum |> (< 2)
+halves |> take 2000 |> sum |> (< 2)
+```
