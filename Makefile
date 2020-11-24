@@ -7,7 +7,7 @@ TARGET = $(BUILDDIR)/fleet
 TESTTARGET = $(BUILDDIR)/testFleet
 
 CC = g++
-CFLAGS = -c -Wall -Werror -Wextra -std=c++17
+CFLAGS = -c -Wall -Werror -Wextra -pedantic -std=c++17
 TESTSCFLAGS = -iquote $(SRCDIR)
 DEBUGCFLAGS = -g
 LFLAGS = 
