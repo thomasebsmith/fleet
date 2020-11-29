@@ -15,6 +15,7 @@ divisibleByThree  0 == True
 divisibleByThree  2 == False
 divisibleByThree -1 == False
 divisibleByThree 12 == True
+divisibleByThree -6 == True
 ```
 
 ## `(+) :: Num => Num => Num`
@@ -59,6 +60,7 @@ factorial = n -> n * factorial (n - 1)
 factorial 5 == 120
 factorial 1 == 1
 factorial 3 == 6
+factorial 8 == 40320
 ```
 
 ## `(/) :: Num => Num (/= 0) => Num`
