@@ -7,10 +7,12 @@ task.
 This project includes an interpreter written in C++, although the interpreter
 is still in progress.
 
+The interpreter is designed to run on MacOS and Linux.
+
 ## Building the Project
 ##### You need:
  * `git`
- * `g++` with C++17 support
+ * `g++` with full C++17 support
  * `make`
  * A Unix-compatible shell
 
