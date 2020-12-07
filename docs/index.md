@@ -3,6 +3,7 @@
 ## Overview
 Fleet is a simple, functional programming language.
 This project includes an interpreter written in C++.
+The interpreter is designed to run on MacOS and Linux.
 
 Fleet (as a language) could also be compiled, but no compiler currently exists.
 
