@@ -14,9 +14,9 @@ syntax tree builder are implemented (with accompanying tests).
 ## Building the Project
 ##### You need:
  * `git`
- * `g++` or `clang` with C++17 support
+ * `g++`, `clang`, or another compiler with C++17 support
  * `make`
- * A Unix-compatible shell
+ * A POSIX-compatible shell
 
 ##### Instructions:
  1. Clone the project:
@@ -46,7 +46,7 @@ syntax tree builder are implemented (with accompanying tests).
   depending on what target was built.
 
 Note: You can run `make debug` or `make debugtests` to build Fleet with
-debugging hooks enabled.
+debugging information included.
 
 ## About the Language
 Fleet's philosophy is one of simplicity: its grammar is extremely simple, with

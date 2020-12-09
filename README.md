@@ -12,9 +12,9 @@ The interpreter is designed to run on MacOS and Linux.
 ## Building the Project
 ##### You need:
  * `git`
- * `g++` with full C++17 support
+ * `g++`, `clang`, or another compiler with full C++17 support
  * `make`
- * A Unix-compatible shell
+ * A POSIX-compatible shell
 
 ##### Instructions:
  1. Clone the project:
